@@ -1,0 +1,436 @@
+/* DoRoboty design system — shared host recipes.
+   Typography, surfaces, data roles and states for screens outside the
+   canonical marketplace. Values come from docs/design-system/DOROBOTY.md. */
+
+/* ---------- typography ---------- */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+[data-slot="dialog-title"],
+[data-slot="alert-dialog-title"] {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-synthesis: none;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+/* Product screens keep headings smaller than the landing: title 32, section 20. */
+h1 {
+  font-size: var(--gui-text-xl);
+  line-height: 1.1;
+  letter-spacing: var(--gui-tracking-s);
+}
+h2 {
+  font-size: 24px;
+  line-height: 1.15;
+  letter-spacing: var(--gui-tracking-s);
+}
+h3 {
+  font-size: var(--gui-text-l);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+h4,
+h5,
+h6 {
+  font-size: var(--gui-text-m);
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+body {
+  letter-spacing: 0;
+}
+
+/* Every fact is mono: labels, prices, units, dates, locations, counters, status. */
+.data,
+.eyebrow,
+.mono {
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+}
+.eyebrow {
+  margin: 0;
+  font-size: var(--gui-text-xxs);
+  line-height: var(--gui-leading-xxs);
+  letter-spacing: var(--gui-tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--gui-text-muted);
+}
+.data {
+  font-size: var(--gui-text-xs);
+  line-height: var(--gui-leading-xs);
+  letter-spacing: 0;
+  color: var(--gui-text-muted);
+}
+.data--ink {
+  color: var(--gui-text);
+}
+
+/* Muted mono labels reach 4.6 : 1 on paper but only 4.2 : 1 on paper-2, so every
+   raised surface steps the muted role up to ink-2 (9.4 : 1). */
+.prototype-panel,
+.prototype-form,
+.prototype-row,
+.metric-card,
+.visitors-card,
+.success-panel,
+.record-sheet,
+.recruiting-record,
+.workspace-label,
+.pp-job-card:hover,
+.pp-offer-sidebar,
+.pp-offer-action-card,
+.pp-offer-employer,
+.pp-empty-state,
+[data-slot="dialog-content"],
+[data-slot="alert-dialog-content"] {
+  --gui-text-muted: var(--gui-ink-2);
+  --pp-muted: var(--gui-ink-2);
+}
+
+/* ---------- focus ---------- */
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--gui-focus);
+  outline-offset: 2px;
+}
+
+/* ---------- brand wordmark ---------- */
+
+.brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.brand__word {
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+.brand__tld {
+  font-family: var(--font-data);
+  font-weight: 500;
+  color: var(--gui-accent-text-on-light);
+}
+
+/* ---------- chrome ---------- */
+
+header:has([aria-label="Główna nawigacja"]) {
+  background: var(--gui-paper);
+  backdrop-filter: none;
+}
+header:has([aria-label="Główna nawigacja"]) > div {
+  height: 72px;
+  max-width: calc(var(--gui-content-max) + var(--gui-gutter) * 2);
+  padding-inline: var(--gui-gutter);
+}
+header a[aria-label="DoRoboty.ai — strona główna"] {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+footer {
+  background: var(--gui-paper);
+}
+
+/* ---------- landing-style home ---------- */
+
+.home-intro > div {
+  max-width: calc(var(--gui-content-max) + var(--gui-gutter) * 2);
+  align-items: center;
+  padding-block: var(--gui-space-xxl);
+  padding-inline: var(--gui-gutter);
+}
+.home-intro h1 {
+  font-size: clamp(2.3rem, 1.3rem + 4.4vw, 4.75rem);
+  line-height: 1.02;
+  letter-spacing: var(--gui-tracking-xs);
+  max-width: 18ch;
+}
+.home-intro .eyebrow {
+  margin-bottom: var(--gui-space-xs);
+}
+/* Fact strip: three equal mono cells under the opening, each with a top line. */
+.hero-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gui-space-l);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hero-facts li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: var(--gui-space-s);
+  border-top: 1px solid var(--gui-edge);
+  min-width: 0;
+}
+.hero-facts__value {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.hero-facts__label {
+  font-family: var(--font-data);
+  font-size: var(--gui-text-xxs);
+  line-height: var(--gui-leading-xxs);
+  color: var(--gui-text-muted);
+}
+@media (max-width: 700px) {
+  .hero-facts {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  .hero-facts li {
+    padding-block: var(--gui-space-s);
+  }
+  .hero-facts__value {
+    font-size: 28px;
+  }
+}
+
+/* ---------- sections, panels, forms ---------- */
+
+.prototype-section {
+  max-width: calc(var(--gui-content-max) + var(--gui-gutter) * 2);
+  padding-block: var(--gui-space-xl);
+  padding-inline: var(--gui-gutter);
+}
+.prototype-panel,
+.metric-card,
+.visitors-card,
+.success-panel {
+  border-radius: var(--gui-radius-m);
+  background: var(--gui-surface-raised);
+  box-shadow: var(--gui-edge-shadow);
+}
+.prototype-panel h2 {
+  margin-bottom: var(--gui-space-s);
+}
+.prototype-form {
+  padding: var(--gui-space-l);
+  background: var(--gui-surface-raised);
+  border: 1px solid var(--gui-edge);
+  border-radius: var(--gui-radius-m);
+  width: 100%;
+  box-shadow: none;
+}
+.prototype-panel .prototype-form {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+/* Field label in mono over the control, hint and error below it. */
+.field {
+  font-size: var(--gui-text-s);
+  line-height: 1.6;
+}
+.field > span:first-child {
+  font-family: var(--font-data);
+  font-size: var(--gui-text-xxs);
+  font-weight: 400;
+  letter-spacing: var(--gui-tracking-xl);
+  text-transform: uppercase;
+  color: var(--gui-text-muted);
+}
+.prototype-notice {
+  background: var(--gui-signal-wash);
+  border: 1px solid var(--gui-edge);
+  border-radius: var(--gui-radius-s);
+  line-height: 1.6;
+}
+.prototype-error,
+.error-message {
+  border: 1px solid var(--gui-error);
+  color: var(--gui-error);
+  font-family: var(--font-data);
+  font-size: var(--gui-text-xxs);
+  letter-spacing: 0;
+}
+
+/* ---------- workspace chrome ---------- */
+
+.nav-active,
+.nav-active:hover {
+  background: var(--gui-ink);
+  color: var(--gui-paper);
+}
+.sidebar,
+.topbar {
+  background: var(--gui-paper);
+}
+.workspace-label {
+  padding-block: var(--gui-space-l);
+}
+.workspace-avatar {
+  background: var(--gui-surface-raised);
+  border: 1px solid var(--gui-edge);
+  border-radius: var(--gui-radius-s);
+  flex-shrink: 0;
+  font-family: var(--font-data);
+}
+.main-content {
+  padding: var(--gui-space-xl);
+}
+.topbar {
+  min-height: 72px;
+}
+.page-heading {
+  padding-block: var(--gui-space-xs) var(--gui-space-m);
+  border-bottom: 1px solid var(--gui-edge);
+}
+.page-heading h1 {
+  font-size: var(--gui-text-xl);
+}
+.native-select {
+  border: 1px solid var(--gui-edge);
+}
+[data-slot="select-trigger"] {
+  box-shadow: var(--gui-edge-shadow);
+}
+[data-slot="checkbox"] {
+  border-radius: var(--gui-radius-xs);
+  box-shadow: var(--gui-edge-shadow);
+}
+/* Tags and status chips are capsules with no color of their own. */
+[data-slot="badge"] {
+  box-shadow: inset 0 0 0 1px var(--gui-edge);
+  border-radius: var(--gui-radius-full);
+  background: var(--gui-paper);
+  color: var(--gui-text);
+  font-family: var(--font-data);
+  font-size: var(--gui-text-xxs);
+  font-weight: 400;
+  letter-spacing: var(--gui-tracking-xl);
+  white-space: normal;
+}
+[data-slot="dialog-content"],
+[data-slot="alert-dialog-content"] {
+  border: 1px solid var(--gui-edge-strong);
+  background: var(--gui-paper);
+  border-radius: var(--gui-radius-m);
+}
+
+@media (max-width: 600px) {
+  h1,
+  .page-heading h1 {
+    font-size: 26px;
+  }
+  header:has([aria-label="Główna nawigacja"]) > div {
+    height: 64px;
+  }
+  header a[aria-label="DoRoboty.ai — strona główna"] {
+    font-size: 19px;
+  }
+  .main-content {
+    padding: var(--gui-space-l) var(--gui-gutter);
+  }
+  .prototype-form {
+    padding: var(--gui-space-m);
+  }
+  .home-intro > div {
+    gap: var(--gui-space-l);
+    padding-block: var(--gui-space-xl);
+  }
+}
+
+/* Lists are rows divided by a 1px line, not a grid of cards. */
+.prototype-rows {
+  margin: var(--gui-space-l) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.prototype-row {
+  display: block;
+  padding: var(--gui-space-m) 0;
+  border-top: 1px solid var(--gui-edge);
+  background: transparent;
+}
+.prototype-rows > li:last-child {
+  border-bottom: 1px solid var(--gui-edge);
+}
+
+/* ---------- match score ----------
+   Binding content rule: the score orders reading, it does not predict success.
+   One ink fact in mono, no band, no bar, no color. The method-limit note
+   (.score-limit) is required wherever a score is visible. */
+.match-score {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 1px;
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--gui-score-text);
+  font-family: var(--font-data);
+  font-size: var(--gui-text-m);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+.match-score small {
+  font-size: var(--gui-text-xxs);
+  font-weight: 400;
+  color: var(--gui-text-muted);
+}
+.score-limit {
+  margin: 0 0 var(--gui-space-m);
+  max-width: 62ch;
+  font-size: var(--gui-text-xs);
+  line-height: 1.5;
+  color: var(--gui-text-muted-accessible);
+  border-left: 3px solid var(--gui-edge);
+  padding-left: var(--gui-space-s);
+}
+
+/* ---------- context return ---------- */
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gui-space-xs);
+  min-height: 40px;
+  max-width: 100%;
+  font-family: var(--font-data);
+  font-size: var(--gui-text-xs);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--gui-text);
+}
+.back-link svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  stroke-width: 1.65;
+}
+.back-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+@media (max-width: 700px) {
+  .back-link {
+    font-size: var(--gui-text-xxs);
+  }
+}
+
+/* The system has no success green and no decorative burst: a successful
+   submission is confirmed by an ink-edged notice instead. */
+.prototype-notice {
+  box-shadow: var(--gui-edge-strong-shadow);
+}

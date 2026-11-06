@@ -1,21 +1,39 @@
-# GUI — DoRoboty.ai Poster People
+# GUI — DoRoboty.ai
 
-The required visual direction for new and changed screens is the accepted **Poster People** design system. The project instructions are [docs/design-system/README.md](docs/design-system/README.md). Read them before UI work; they define how the standalone reference is adapted to this React/TypeScript/Vite application. The previous theme reference tree and skill requirements have been removed.
+The required visual direction for new and changed screens is the **DoRoboty design system**: warm
+paper, Space Grotesk + IBM Plex Mono, one orange signal. The full specification is
+[docs/design-system/DOROBOTY.md](docs/design-system/DOROBOTY.md). Read it before UI work.
 
-## Read and preview
+## In one minute
 
-1. [Project integration guide](docs/design-system/README.md): authority, React/Base UI mapping, routes/state, assets and completion criteria.
-2. [Host implementation rules](docs/design-system/IMPLEMENTATION.md), [React component catalog](docs/design-system/HOST-COMPONENTS.md), [record/CV APIs](docs/design-system/RECORDS.md), [acceptance checklist](docs/design-system/VERIFICATION.md) and [status/open findings](docs/design-system/STATUS.md): reusable owners, actual contracts, URL/focus rules, breakpoint values and regression scenarios.
-3. [Agent entry point](docs/design-system/agent-kit/design.md): visual hierarchy, composition, exact standalone imports and extension boundaries.
-4. [Component API](docs/design-system/agent-kit/components/API.md) plus relevant [human reference](docs/design-system/agent-kit/reference/components.md): anatomy, variants, states and evidence.
-5. `npm run design-system:dev`: local catalog, full listing and offer on port 8952. `npm run design-system:check` checks the immutable kit. No global skill or extra installation is required.
+- **Surfaces.** Paper `#f2efe9` for the page, fields and flat chrome; paper 2 `#e8e4db` for cards
+  and panels. No white, no blurred shadow — depth is a paper tone plus a 1px `#d6d1c6` line.
+- **Type.** Space Grotesk for headings, body and controls (700 for headings, tight tracking).
+  IBM Plex Mono for every fact: labels, prices, units, dates, locations, counters, score, status.
+  Product page title ~32px, section 20px, body 17px/1.6.
+- **Orange.** `#ff4a1c` is a background or shape, never letters. Orange letters on paper are
+  `#c2350f`; a label on orange is ink `#121417`. At most one signal action per view. Errors use
+  `#b42318`, never the signal.
+- **Shape.** 6px for buttons and fields, 14px for cards, 999px for choices and tags.
+- **Lists** are rows divided by a 1px line, not a grid of cards.
+- **Motion** is control-state transitions only, 120–200ms, and honours `prefers-reduced-motion`.
 
 ## Implement in this app
 
-- Preserve the requested scope, React/TypeScript/Vite, hash routes, Base UI's `render` composition, Zod/local data operations and current application workflows.
-- Use local Geist Serif Regular for headings, paper/white/ink/pink roles, source contours and radii, complete title wrapping and responsive listing/offer composition.
-- Adapt host tokens and existing primitives together. Do not paste the kit's global reset or vanilla controllers into React, substitute example data for product state, or create a parallel button/card library.
-- Keep docs/design-system/agent-kit unchanged as the reference; implement product UI in src/ and the host theme layer. Existing token names do not establish an alternative visual target.
-- Compare desktop/mobile evidence; test long content, missing salary/marks, keyboard focus, selection, dialogs and recovery. Run ./scripts/verify and report actual checks. The original kit report does not verify a new React screen.
+- Tokens: [tokens.css](tokens.css). Shared recipes: [src/app/doroboty.css](src/app/doroboty.css).
+  Marketplace geometry: `src/app/marketplace*.css`, aliased to the same tokens. No raw hex in `src/`.
+- Fonts are bundled locally in [src/app/fonts](src/app/fonts) (Latin + Latin Extended, so Polish
+  diacritics render offline). Never reference a remote font endpoint.
+- Keep React/TypeScript/Vite, hash routes, Base UI's `render` composition, Zod validation, persona
+  data and localStorage flows as they are; change the visual layer, not the product contract.
+- The match score carries no color and always travels with its method-limit note. Demo data says it
+  is demo.
+- Check 1440 and 390, long content, keyboard focus and error states. Run `./scripts/verify` and
+  update [FEATURES.md](FEATURES.md) for real behavior changes.
 
-The running application has a host adaptation; current code still requires comparison with the source on each UI task. Follow the implementation map rather than creating parallel controls. Keep Search outside mobile filters, preserve copied section URLs under HashRouter, manage focus after chip removal, reuse outlined surfaces and compare full action type roles plus one contour. Record actual evidence and partial findings; preserve old audit artifacts in separate task-specific directories.
+## Previous direction
+
+Poster People is archived, not active. `docs/design-system/agent-kit` stays immutable
+(`npm run design-system:check`, port 8952 for `npm run design-system:dev`) as the record of that
+work, and the other files in `docs/design-system/` still document host component contracts and
+acceptance scenarios. Do not take color, type or shape decisions from them.

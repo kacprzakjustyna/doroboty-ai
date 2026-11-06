@@ -1,6 +1,20 @@
 # Runtime typography
 
-The application loads local Geist Serif Regular 400 from `docs/design-system/agent-kit/assets/fonts/GeistSerif-Regular.woff2` through Vite. Its SIL OFL license remains beside the font. All headings use this weight without synthetic bold. Body and controls use Arial/Helvetica/system sans; they make no remote font requests.
+The application loads **Space Grotesk** 400/500/700 and **IBM Plex Mono** 400/500 from the WOFF2
+files in this directory, declared in [../fonts.css](../fonts.css) and resolved by Vite. Space
+Grotesk carries headings, body and controls; IBM Plex Mono carries every data role — labels,
+prices, units, dates, locations, counters, score and status.
+
+Each family ships two subsets per weight, `latin` and `latin-ext`, with the matching
+`unicode-range`, so Polish diacritics come from the extended file and no remote font request is
+made at runtime. Both families are SIL OFL; the licenses sit beside the files as
+`LICENSE-space-grotesk.txt` and `LICENSE-ibm-plex-mono.txt`. The files were taken from the
+`@fontsource/space-grotesk` and `@fontsource/ibm-plex-mono` 5.3.0 packages, copied in rather than
+added as runtime dependencies.
+
+Geist Serif is no longer loaded: it belonged to the Poster People direction, which
+[docs/design-system/DOROBOTY.md](../../../docs/design-system/DOROBOTY.md) replaced. The font file
+itself stays in the immutable kit.
 
 ## Retained historical assets
 

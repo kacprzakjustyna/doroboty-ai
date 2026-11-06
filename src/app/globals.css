@@ -2,8 +2,9 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "../../tokens.css";
+@import "./fonts.css";
 @import "./workspace.css";
-@import "./poster-people.css";
+@import "./doroboty.css";
 @import "./marketplace.css";
 @import "./records.css";
 @import "./application.css";
@@ -15,6 +16,7 @@
   --font-sans: var(--font-body);
   --font-ui: var(--font-interface);
   --font-mono: var(--font-code);
+  --font-data: var(--font-code);
   --font-heading: var(--font-display);
   --text-xs: var(--gui-text-xxs);
   --text-xs--line-height: var(--gui-leading-xxs);
@@ -96,18 +98,24 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-variation-settings:
-      "STYL" 0,
-      "ital" 0;
+    font-size: var(--gui-text-m);
+    line-height: 1.6;
+    letter-spacing: 0;
     text-wrap: pretty;
+    -webkit-font-smoothing: antialiased;
   }
   html {
     @apply font-sans;
-    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 
   ::selection {
-    background: var(--gui-color-1-transparent);
+    background: var(--gui-signal-wash);
     color: var(--gui-text);
   }
 
@@ -118,19 +126,5 @@
   [data-slot="dialog-portal"],
   [data-slot="alert-dialog-portal"] {
     font-family: var(--gui-font-ui);
-    font-variation-settings:
-      "STYL" 0,
-      "ital" 0;
   }
-}
-
-@font-face {
-  font-family: "Geist Serif";
-  src: url("../../docs/design-system/agent-kit/assets/fonts/GeistSerif-Regular.woff2")
-    format("woff2");
-  font-weight: 400;
-  font-display: swap;
-}
-:root {
-  --font-timeless: "Timeless Grotesk", sans-serif;
 }
