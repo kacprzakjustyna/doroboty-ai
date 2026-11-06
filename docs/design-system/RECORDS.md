@@ -1,5 +1,7 @@
 # Record sheets and process timelines — host components
 
+**Visual authority moved on 2026-11-06:** new and changed screens follow the `doroboty-screens` skill; see [GUI.md](../../GUI.md). These component contracts describe what is implemented in src/ today, not how a new screen should look.
+
 These components implement the shared employer and candidate process-view composition. See the [host catalog](HOST-COMPONENTS.md) for return links, application preview, hover and motion, and [status](STATUS.md) for unresolved findings. They extend the React host using Poster People typography, paper/white/ink/pink, existing controls and the r24 outlined reading surface. They are not a new release of the immutable v1 reference.
 
 ## RecordSheet

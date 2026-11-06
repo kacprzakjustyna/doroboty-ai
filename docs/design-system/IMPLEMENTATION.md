@@ -1,5 +1,7 @@
 # Poster People — host implementation rules
 
+**Visual authority moved on 2026-11-06:** new and changed screens follow the `doroboty-screens` skill; see [GUI.md](../../GUI.md). The host rules below — component owners, URL/focus behavior, breakpoints and token layering — still apply and are not a visual authority.
+
 Read with the [project guide](README.md), [host catalog](HOST-COMPONENTS.md), [current status](STATUS.md), immutable [component API](agent-kit/components/API.md) and [human reference](agent-kit/reference/components.md). These are project integration rules, not a replacement v1 kit or a new reference release. Use the [acceptance checklist](VERIFICATION.md) before claiming completion.
 
 ## Start from anatomy, then adapt

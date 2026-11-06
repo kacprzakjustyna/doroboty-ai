@@ -1,5 +1,7 @@
 # Poster People — application acceptance checklist
 
+**Visual authority moved on 2026-11-06:** new and changed screens follow the `doroboty-screens` skill; see [GUI.md](../../GUI.md). The responsive, long-content, keyboard, state and recovery checks below still apply to any new screen. Items that compare a screen against the source kit refer to the superseded Poster People reference.
+
 Use with [implementation rules](IMPLEMENTATION.md) and the [project guide](README.md). This checklist incorporates the implementation audits A01–A08/R01–R04 and the later process/application/interaction work. Read the [host catalog](HOST-COMPONENTS.md), [record APIs](RECORDS.md) and [status/open findings](STATUS.md) for current owners. It defines checks to execute; it does not claim any future screen has passed them.
 
 ## Evidence required before completion
