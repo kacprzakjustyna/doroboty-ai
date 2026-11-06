@@ -24,18 +24,18 @@ FEATURES.md describes current behavior, not a roadmap. Update it in the same cha
 
 ## Required design system
 
-For every new or changed screen, use [Poster People project instructions](docs/design-system/README.md). Read that guide, [design.md](docs/design-system/agent-kit/design.md), [component API](docs/design-system/agent-kit/components/API.md), and the relevant [human reference](docs/design-system/agent-kit/reference/components.md) before choosing styles or layout. Read the [host implementation rules](docs/design-system/IMPLEMENTATION.md) and [application acceptance checklist](docs/design-system/VERIFICATION.md) as required companions. [GUI.md](GUI.md) is the short entry point. This is the required visual direction; the previous theme guidance has been removed.
+For every new or changed screen, use the `doroboty-screens` skill: warm paper, Space Grotesk + IBM Plex Mono and a single orange signal. Invoke it before choosing styles or layout. Justyna decided on 2026-11-06 that this skill is the authoritative visual direction and that it overrides Poster People, which this file previously required.
 
-Use the complete local kit in docs/design-system/agent-kit as the source for typography, colors, radii, anatomy, responsive composition and states. Adapt it to this project's React/TypeScript/Vite and existing Base UI primitives. Keep the `render` API, hash routes, domain data and persistent local flows. Do not import the example controllers, fixtures, body reset or string renderer into product React code. Current application styles are implementation to adapt within the active task scope, not another approved visual target. Installing documentation does not itself convert the running UI.
+The skill emits static HTML/CSS. Translate its typography, color roles, spacing, anatomy and states into this project's React/TypeScript/Vite code and existing Base UI primitives. Keep the `render` API, hash routes, domain data and persistent local flows. Do not import the skill's markup, reset or example data into product React code. Current application styling is the superseded direction; convert it only within the active task scope.
 
-Run `npm run design-system:dev` for the reference catalog/listing/offer (port 8952) and `npm run design-system:check` for integrity and example checks. No extra package installation is needed for the kit. Use local bundled Geist Serif/illustration assets; no remote runtime dependencies. Keep the kit immutable and implement product changes in src/ and the host token layer. Follow the guide's desktop/mobile, long-content, keyboard/state and integration checks; the reference's verification report does not verify a new screen.
+`GUI.md` and `docs/design-system/` (including its README) document Poster People and are retained as history only. They no longer decide how a screen should look. Keep `docs/design-system/agent-kit` byte-identical; `npm run design-system:check` still verifies it. Implement product changes in src/ and the host token layer. Validate desktop/mobile, long content, keyboard/state and recovery yourself; no reference report verifies a new screen.
 
 ## Standards
 
 - Code, comments and authored engineering documentation are English; end-user UI and canonical AIPH source wording are Polish.
 - Use npm, Node.js 24 and package-lock.json. No second package manager.
 - Features belong in src/features; src/components/ui contains shared Base UI primitives.
-- For UI changes follow GUI.md and docs/design-system/README.md; use the accepted Poster People design system with the existing Base UI components and render composition API. Do not restore the removed theme guides or require global design skills.
+- For UI changes invoke the `doroboty-screens` skill and implement its direction with the existing Base UI components and render composition API. Do not take visual decisions from GUI.md or docs/design-system/, which document the superseded Poster People direction.
 - Use React Router hash routes.
 - Never log private free text or introduce secrets into the frontend.
 

@@ -23,7 +23,7 @@ have to be updated in this change; otherwise any later session reverts the scree
 
 1. **Candidate side.** Before submitting, an assistant asks about a vague answer ("Co dokladnie
    zrobiles sam? Jaki byl efekt? Skad wiesz, ze zadzialalo?"), then composes a fixed-structure card
-   *Moja czesc / Co robil zespol / Efekt / Jak to sprawdzono* in the candidate's own words. The
+   _Moja czesc / Co robil zespol / Efekt / Jak to sprawdzono_ in the candidate's own words. The
    candidate reviews it and either approves or corrects it before it is attached to the
    application. The candidate can ask the assistant what a question means.
 2. **Recruiter side.** The approved card appears at the top of the application record, with a line
