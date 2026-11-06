@@ -13,8 +13,13 @@ Decision type is explicitly "develop as a prototype and keep researching", not "
 
 ## Intent and acceptance
 
-Add two prototype screens inside the existing React/hash-routed application, adapted to Poster
-People, Polish UI:
+Add two prototype screens inside the existing React/hash-routed application, Polish UI.
+
+**Design system (decided by Justyna, 2026-11-06):** the `doroboty-screens` skill is the
+authoritative visual direction for this work and overrides the Poster People direction currently
+required by `CLAUDE.md` and `AGENTS.md`. That means warm paper, Space Grotesk + IBM Plex Mono and a
+single orange signal. Those two repository instruction files still mandate Poster People, so they
+have to be updated in this change; otherwise any later session reverts the screens.
 
 1. **Candidate side.** Before submitting, an assistant asks about a vague answer ("Co dokladnie
    zrobiles sam? Jaki byl efekt? Skad wiesz, ze zadzialalo?"), then composes a fixed-structure card
