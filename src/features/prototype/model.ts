@@ -1,8 +1,11 @@
 import { z } from "zod";
 import marketplace from "./data/marketplace.json" with { type: "json" };
 import people from "./data/people.json" with { type: "json" };
+import discoveryCases from "./data/discovery-cases.json" with { type: "json" };
 import type { JobWithCompany } from "@/features/jobs/types";
 
+// Discovery-case applicants exist only as applications; they are never selectable personas.
+const caseCandidates = new Set(discoveryCases.map((item) => item.candidateId));
 const id = z
   .string()
   .min(1)
@@ -164,7 +167,7 @@ export const stateSchema = z
     for (const a of s.applications) {
       const key = `${a.candidateId}:${a.jobId}`;
       if (
-        !candidates.has(a.candidateId) ||
+        !(candidates.has(a.candidateId) || caseCandidates.has(a.candidateId)) ||
         jobs.get(a.jobId)?.companyId !== a.companyId ||
         keys.has(key)
       )
@@ -244,6 +247,27 @@ export function initialState(): State {
     stage: "submitted",
     events: [{ stage: "submitted", at: "2026-11-02T09:00:00.000Z", note: "" }],
   });
+  // Discovery cases for the I2 prototype: the text the recruiter saw after the writing assistant,
+  // taken verbatim from the synthetic discovery data. They are applicants only, not login personas.
+  for (const item of discoveryCases) {
+    const caseJob = state.jobs.find((x) => x.id === item.jobId)!;
+    state.applications.push({
+      id: item.id,
+      candidateId: item.candidateId,
+      jobId: caseJob.id,
+      companyId: caseJob.companyId,
+      jobTitle: caseJob.title,
+      candidateName: item.candidateName,
+      cv: item.cv,
+      answer: item.answer,
+      sourceNotes: "",
+      generatedAnswer: "",
+      score: item.score,
+      summary: item.summary,
+      stage: "submitted",
+      events: [{ stage: "submitted", at: item.submittedAt, note: "" }],
+    });
+  }
   return stateSchema.parse(state);
 }
 export function publishedJobs(state: State): JobWithCompany[] {

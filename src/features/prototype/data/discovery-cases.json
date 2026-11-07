@@ -1,0 +1,35 @@
+[
+  {
+    "id": "application-case-kuba",
+    "candidateId": "case-kuba",
+    "candidateName": "Kuba",
+    "jobId": "20000000-0000-4000-8000-000000000007",
+    "answer": "Zbudowałem komponent indeksowania i ewaluacji wyszukiwarki dokumentów, integrując go z istniejącym API zespołu.",
+    "cv": "Kuba — inżynier AI (mid)\nW projekcie wyszukiwarki odpowiadałem za indeksowanie i zestaw testów ewaluacji; API przygotowywała inna osoba.\nPortfolio: repo komponentu i opis testów: https://kuba.example/search. Dane klientów prywatne; dostępny syntetyczny zestaw testów.",
+    "score": 82,
+    "summary": "Komponent indeksowania i ewaluacji wyszukiwarki dokumentów, zintegrowany z API zespołu.",
+    "submittedAt": "2026-11-03T10:00:00.000Z"
+  },
+  {
+    "id": "application-case-natalia",
+    "candidateId": "case-natalia",
+    "candidateName": "Natalia",
+    "jobId": "20000000-0000-4000-8000-000000000007",
+    "answer": "Mam doświadczenie we wdrażaniu wyszukiwania semantycznego i doskonaleniu rozwiązań AI na podstawie wyników ewaluacji.",
+    "cv": "Natalia — inżynierka AI (mid)\nUczestniczyłam w demo wyszukiwarki. Przygotowałam prezentację i część promptów; pipeline napisała inna osoba.\nPortfolio: slajdy z demo: https://natalia.example/search-demo. Nie jestem autorką komponentu indeksowania.",
+    "score": 83,
+    "summary": "Wdrażanie wyszukiwania semantycznego i doskonalenie rozwiązań AI na podstawie ewaluacji.",
+    "submittedAt": "2026-11-04T10:00:00.000Z"
+  },
+  {
+    "id": "application-case-ola",
+    "candidateId": "case-ola",
+    "candidateName": "Ola",
+    "jobId": "20000000-0000-4000-8000-000000000004",
+    "answer": "Wdrażałem automatyzację obsługi klienta opartą na AI i koordynowałem adopcję rozwiązania w zespole.",
+    "cv": "Ola — specjalistka ds. procesów (mid)\nW zespole obsługi zmieniłam przygotowanie odpowiedzi. Zbieraliśmy dane o użyciu i rozmawialiśmy z użytkownikami.\nPortfolio: notatka przed/po i opis adopcji; lider zespołu potwierdza mój wkład w analizę i wdrożenie.",
+    "score": 83,
+    "summary": "Automatyzacja obsługi klienta oparta na AI i koordynacja adopcji rozwiązania w zespole.",
+    "submittedAt": "2026-11-05T10:00:00.000Z"
+  }
+]
