@@ -1,5 +1,7 @@
 # Poster People — React host component catalog
 
+**Visual authority moved on 2026-11-06:** new and changed screens follow the `doroboty-screens` skill; see [GUI.md](../../GUI.md). This catalog describes components as they exist in src/ today — reuse them rather than duplicating, and restyle within the active task scope.
+
 This is the receiving application's component map, checked against the implemented code on November 2, 2026. Use it with the immutable [source API](agent-kit/components/API.md), [integration rules](IMPLEMENTATION.md), [record APIs](RECORDS.md) and [acceptance checklist](VERIFICATION.md). These host components implement user-requested extensions; they do not create a new v1 kit release. [STATUS.md](STATUS.md) separates implementation evidence from unresolved audit findings.
 
 ## Choose an existing owner
