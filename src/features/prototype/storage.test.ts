@@ -56,6 +56,25 @@ describe("browser persistence and recovery", () => {
     expect(() => saveState(storage, initialState())).toThrow("Wyeksportuj");
     expect(storage.getItem()).toBe(old);
   });
+  it("adds the discovery cases to a save made before they existed, keeping user changes", () => {
+    const old = initialState();
+    old.jobs = old.jobs.filter((x) => x.slug !== "ai-engineer-wyszukiwarka-dokumentow");
+    old.applications = old.applications.filter((x) => !x.id.startsWith("application-case-"));
+    old.companies[0].name = "BrightLabs (edytowane)";
+    const storage = { getItem: () => JSON.stringify(old), setItem: () => {} };
+    const { state, issue } = readState(storage);
+    expect(issue).toBe("");
+    expect(state.companies[0].name).toBe("BrightLabs (edytowane)");
+    expect(state.applications.map((x) => x.candidateName)).toEqual([
+      "Marek Nowak",
+      "Kuba",
+      "Natalia",
+      "Ola",
+    ]);
+    expect(readState({ getItem: () => JSON.stringify(state), setItem: () => {} }).state).toEqual(
+      state,
+    );
+  });
   it("rejects invalid references and oversized files", () => {
     const s = initialState();
     s.saved = [{ candidateId: "missing", jobId: s.jobs[0].id }];

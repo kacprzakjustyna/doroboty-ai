@@ -34,11 +34,14 @@ Source: `kacprzakjustyna/doroboty-ai-superbrain` (private), `discovery/data/appl
 - Summaries are short neutral paraphrases of the final answer; the data has no platform summary.
 - Real outcomes (invite, interview, decision) are not shown in the UI; they are the benchmark for
   the later card check.
-- Browsers with an existing saved scenario see the cases only after reset or import.
+- A scenario saved before this change gets the ad and the cases added on load (`withDiscoveryCases`,
+  additive only; skipped on conflict). Imported files are taken as they are.
 
 ## Validation (2026-11-07)
 
 `./scripts/verify` passed: format, design-system check, lint, types, 28 unit tests, packet check,
-build, 35 browser tests (new: recruiter list and company scoping of the cases). Two existing
+build, 35 browser tests (new: recruiter list and company scoping of the cases). After adding the
+load-time upgrade: 29 unit tests (new: an older save gains the cases and keeps user edits), 35
+browser tests, all passing. Two existing
 assertions changed because the marketplace now has seven jobs (three in "build"). FEATURES.md
 EMP-07 and SYS-07 updated.

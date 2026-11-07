@@ -270,6 +270,34 @@ export function initialState(): State {
   }
   return stateSchema.parse(state);
 }
+/**
+ * Adds the discovery-case ad and applicants to a scenario saved before they existed. Purely
+ * additive: nothing the user saved is changed, and a case is skipped when its record, its
+ * candidate/job pair or its company is missing.
+ */
+export function withDiscoveryCases(state: State): State {
+  const seed = initialState();
+  const next = structuredClone(state);
+  for (const item of discoveryCases) {
+    const seedJob = seed.jobs.find((x) => x.id === item.jobId)!;
+    if (!next.companies.some((x) => x.id === seedJob.companyId)) continue;
+    if (!next.jobs.some((x) => x.id === seedJob.id)) {
+      if (next.jobs.some((x) => x.slug === seedJob.slug)) continue;
+      next.jobs.push(structuredClone(seedJob));
+    }
+    const job = next.jobs.find((x) => x.id === seedJob.id)!;
+    if (job.companyId !== seedJob.companyId) continue;
+    if (
+      next.applications.some(
+        (x) => x.id === item.id || (x.candidateId === item.candidateId && x.jobId === job.id),
+      )
+    )
+      continue;
+    next.applications.push(structuredClone(seed.applications.find((x) => x.id === item.id)!));
+  }
+  const parsed = stateSchema.safeParse(next);
+  return parsed.success ? parsed.data : state;
+}
 export function publishedJobs(state: State): JobWithCompany[] {
   return state.jobs
     .filter((x) => x.publicationStatus === "published")
