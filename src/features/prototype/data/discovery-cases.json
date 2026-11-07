@@ -8,7 +8,13 @@
     "cv": "Kuba — inżynier AI (mid)\nW projekcie wyszukiwarki odpowiadałem za indeksowanie i zestaw testów ewaluacji; API przygotowywała inna osoba.\nPortfolio: repo komponentu i opis testów: https://kuba.example/search. Dane klientów prywatne; dostępny syntetyczny zestaw testów.",
     "score": 82,
     "summary": "Komponent indeksowania i ewaluacji wyszukiwarki dokumentów, zintegrowany z API zespołu.",
-    "submittedAt": "2026-11-03T10:00:00.000Z"
+    "submittedAt": "2026-11-03T10:00:00.000Z",
+    "scopeCard": {
+      "mine": "Moja część to indeksowanie i testy ewaluacji. Musiałem ustalić, jak aktualizować indeks i co sprawdzać po zmianach.",
+      "team": "Ktoś inny przygotował API. Nie byłem autorem całej wyszukiwarki.",
+      "effect": "",
+      "verification": "Repo komponentu i opis testów. Dane klientów prywatne; dostępny syntetyczny zestaw testów."
+    }
   },
   {
     "id": "application-case-natalia",
@@ -19,7 +25,13 @@
     "cv": "Natalia — inżynierka AI (mid)\nUczestniczyłam w demo wyszukiwarki. Przygotowałam prezentację i część promptów; pipeline napisała inna osoba.\nPortfolio: slajdy z demo: https://natalia.example/search-demo. Nie jestem autorką komponentu indeksowania.",
     "score": 83,
     "summary": "Wdrażanie wyszukiwania semantycznego i doskonalenie rozwiązań AI na podstawie ewaluacji.",
-    "submittedAt": "2026-11-04T10:00:00.000Z"
+    "submittedAt": "2026-11-04T10:00:00.000Z",
+    "scopeCard": {
+      "mine": "Przygotowywałam demo, prezentację i część promptów.",
+      "team": "Pipeline robiła inna osoba. Nie jestem autorką komponentu indeksowania.",
+      "effect": "",
+      "verification": "Slajdy z demo."
+    }
   },
   {
     "id": "application-case-ola",
@@ -30,6 +42,12 @@
     "cv": "Ola — specjalistka ds. procesów (mid)\nW zespole obsługi zmieniłam przygotowanie odpowiedzi. Zbieraliśmy dane o użyciu i rozmawialiśmy z użytkownikami.\nPortfolio: notatka przed/po i opis adopcji; lider zespołu potwierdza mój wkład w analizę i wdrożenie.",
     "score": 83,
     "summary": "Automatyzacja obsługi klienta oparta na AI i koordynacja adopcji rozwiązania w zespole.",
-    "submittedAt": "2026-11-05T10:00:00.000Z"
+    "submittedAt": "2026-11-05T10:00:00.000Z",
+    "scopeCard": {
+      "mine": "W zespole obsługi zmieniłam przygotowanie odpowiedzi.",
+      "team": "Zmienialiśmy przygotowanie odpowiedzi i kategoryzację wiadomości. Zbieraliśmy dane o użyciu i rozmawialiśmy z zespołem.",
+      "effect": "Po zmianie skrócił się czas przygotowania odpowiedzi.",
+      "verification": "Notatka przed i po oraz opis adopcji; lider projektu mógłby potwierdzić mój zakres."
+    }
   }
 ]

@@ -179,6 +179,15 @@ test("BrightLabs recruiter sees the discovery cases with their submitted text", 
   await expect(page.locator("main")).toContainText(
     "Mam doświadczenie we wdrażaniu wyszukiwania semantycznego",
   );
+  const card = page.getByRole("region", { name: "Co kandydat zrobił sam" });
+  await expect(card).toContainText("Przygotowywałam demo, prezentację i część promptów.");
+  await expect(card).toContainText("Kandydat tego nie podał.");
+  await expect(card).toContainText("Wypełnione pola: 3/4 · brak: Efekt");
+  await expect(card).toContainText("nie ocenia kandydata");
+  await page.goto("/#/app/kandydaci/application-example");
+  await expect(page.getByRole("region", { name: "Co kandydat zrobił sam" })).toHaveCount(0);
+  await page.goto("/#/app/kandydaci");
+  await expect(page.locator("main")).toContainText("Karta zakresu · Wypełnione pola: 4/4");
   await choose(page, "Tomasz Zieliński");
   await page.goto("/#/app/kandydaci");
   await expect(page.getByRole("link", { name: "Kuba", exact: true })).toHaveCount(0);

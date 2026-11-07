@@ -75,6 +75,19 @@ describe("browser persistence and recovery", () => {
       state,
     );
   });
+  it("gives discovery cases saved before the scope card existed their card", () => {
+    const old = initialState();
+    for (const a of old.applications) delete a.scopeCard;
+    const { state } = readState({ getItem: () => JSON.stringify(old), setItem: () => {} });
+    expect(state.applications.filter((x) => x.scopeCard).map((x) => x.candidateName)).toEqual([
+      "Kuba",
+      "Natalia",
+      "Ola",
+    ]);
+    expect(state.applications.find((x) => x.candidateName === "Natalia")?.scopeCard?.effect).toBe(
+      "",
+    );
+  });
   it("rejects invalid references and oversized files", () => {
     const s = initialState();
     s.saved = [{ candidateId: "missing", jobId: s.jobs[0].id }];

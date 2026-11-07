@@ -15,6 +15,7 @@ import { CvAttachment } from "./cv-attachment";
 import { MatchScore, ScoreLimitNote } from "./match-score";
 import { RecruitingApplication } from "./recruiting-application";
 import { CandidateApplication } from "./candidate-application";
+import { ScopeCardSignal } from "./scope-card";
 
 export function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -448,6 +449,7 @@ export function ApplicationsPage({ employer = false }: { employer?: boolean }) {
                 <MatchScore score={a.score} />
               </div>
               {employer && <p className="mt-4 text-muted-foreground">{a.summary}</p>}
+              {employer && a.scopeCard && <ScopeCardSignal card={a.scopeCard} />}
             </li>
           ))
         ) : (

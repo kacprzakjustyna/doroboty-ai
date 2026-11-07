@@ -341,3 +341,58 @@
   border-radius: 10px;
   background: var(--gui-canvas);
 }
+
+/* Scope card (I2 prototype): candidate's own words in four fixed fields, 1px dividers, no color. */
+.scope-card {
+  margin-bottom: 30px;
+  padding: 20px 22px;
+  border: 1px solid var(--gui-edge);
+  border-radius: var(--gui-radius-m);
+  background: var(--gui-paper);
+}
+.scope-card-head {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.scope-card-head h3 {
+  margin: 0;
+}
+.scope-card-fields {
+  margin: 0;
+}
+.scope-card-field {
+  display: grid;
+  grid-template-columns: minmax(9rem, 12rem) 1fr;
+  gap: 4px 20px;
+  padding: 12px 0;
+  border-top: 1px solid var(--gui-edge);
+}
+.scope-card-field dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.scope-card-empty {
+  color: var(--gui-text-muted);
+  font-style: italic;
+}
+.scope-card-signal {
+  margin: 12px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--gui-edge);
+}
+.scope-card-note {
+  margin-top: 6px;
+}
+.prototype-row .scope-card-signal {
+  border-top: 0;
+  padding-top: 0;
+}
+@media (max-width: 640px) {
+  .scope-card {
+    padding: 16px;
+  }
+  .scope-card-field {
+    grid-template-columns: 1fr;
+  }
+}

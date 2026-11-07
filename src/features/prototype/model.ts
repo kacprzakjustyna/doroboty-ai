@@ -107,6 +107,19 @@ export const nextStages: Record<Stage, Stage[]> = {
   withdrawn: [],
   hired: [],
 };
+/** Scope card (I2 prototype): the candidate's own words in a fixed structure. Empty = not given. */
+export const scopeCardSchema = z.object({
+  mine: text,
+  team: text,
+  effect: text,
+  verification: text,
+});
+export const scopeCardFields = [
+  ["mine", "Moja część"],
+  ["team", "Co robił zespół"],
+  ["effect", "Efekt"],
+  ["verification", "Jak to sprawdzono"],
+] as const;
 const applicationSchema = z.object({
   id,
   candidateId: id,
@@ -120,6 +133,7 @@ const applicationSchema = z.object({
   generatedAnswer: text,
   score: z.number().int().min(0).max(100),
   summary: text,
+  scopeCard: scopeCardSchema.optional(),
   stage: z.enum(stages),
   events: z
     .array(z.object({ stage: z.enum(stages), at: z.iso.datetime(), note: text }))
@@ -264,6 +278,7 @@ export function initialState(): State {
       generatedAnswer: "",
       score: item.score,
       summary: item.summary,
+      scopeCard: item.scopeCard,
       stage: "submitted",
       events: [{ stage: "submitted", at: item.submittedAt, note: "" }],
     });
@@ -287,11 +302,14 @@ export function withDiscoveryCases(state: State): State {
     }
     const job = next.jobs.find((x) => x.id === seedJob.id)!;
     if (job.companyId !== seedJob.companyId) continue;
-    if (
-      next.applications.some(
-        (x) => x.id === item.id || (x.candidateId === item.candidateId && x.jobId === job.id),
-      )
-    )
+    const existing = next.applications.find((x) => x.id === item.id);
+    if (existing) {
+      // A case saved before the card existed gains it; any other content stays as saved.
+      if (!existing.scopeCard && existing.candidateId === item.candidateId)
+        existing.scopeCard = structuredClone(item.scopeCard);
+      continue;
+    }
+    if (next.applications.some((x) => x.candidateId === item.candidateId && x.jobId === job.id))
       continue;
     next.applications.push(structuredClone(seed.applications.find((x) => x.id === item.id)!));
   }
