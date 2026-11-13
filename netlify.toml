@@ -1,0 +1,46 @@
+# How this prototype is published.
+#
+# Netlify reads this file from the repository, so the publishing settings live
+# with the code instead of only in the Netlify panel. Values set here override
+# the panel's build settings, which means a clone or a fork of this repository
+# deploys the same way without anyone re-entering them by hand.
+
+[build]
+# `npm run build` is `tsc --noEmit && vite build`, so a type error fails the
+# deploy instead of shipping a broken bundle. Vite writes to dist/.
+command = "npm run build"
+publish = "dist"
+
+# The Node version deliberately comes from .nvmrc (24), which Netlify reads on
+# its own. Repeating it here as NODE_VERSION would silently win over .nvmrc the
+# moment the two drift apart, so .nvmrc stays the single source of truth.
+
+# Vite puts a content hash in every file name under /assets (scripts, styles and
+# the bundled Space Grotesk / IBM Plex Mono subsets). A changed file therefore
+# always gets a new URL, so the old one is safe to cache indefinitely.
+[[headers]]
+for = "/assets/*"
+
+[headers.values]
+Cache-Control = "public, max-age=31536000, immutable"
+
+# Conservative headers only. The prototype has no login, no server and no real
+# personal data, and these two cannot break how the page renders.
+[[headers]]
+for = "/*"
+
+[headers.values]
+X-Content-Type-Options = "nosniff"
+Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Two things are left out on purpose:
+#
+# 1. No framing header (X-Frame-Options / frame-ancestors). It would block the
+#    embedded preview of a deploy inside the Netlify dashboard, which is how
+#    changes get reviewed here, and there is nothing to protect from clickjacking
+#    on a prototype with no login or real data.
+#
+# 2. No SPA catch-all rewrite. The application uses hash routes (#/oferty), so
+#    every deep link already resolves to index.html with no rewrite; FEATURES.md
+#    (SYS-11) records that property. A catch-all would also turn a genuinely
+#    missing file into a silent 200 and hide real mistakes.

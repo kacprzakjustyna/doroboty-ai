@@ -1,7 +1,5 @@
 # Design-system integration status
 
-**Visual authority moved on 2026-11-06:** new and changed screens follow the `doroboty-screens` skill; see [GUI.md](../../GUI.md). This snapshot describes the Poster People adaptation that is still running in the application, and its open findings remain open.
-
 This is a receiving-application snapshot as of November 2, 2026. The immutable reference remains Poster People v1.0.0 (67 files). User-requested host implementation/documentation does not imply a new source-kit release, publishing or approval of every application screen.
 
 Engineering task paths below refer to the full development repository and are deliberately not distributed in participant packages. All current component contracts and open findings are self-contained in this directory; task history and ignored screenshots are optional supporting evidence.

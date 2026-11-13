@@ -1031,3 +1031,84 @@ test("candidate snapshot supports custom CV and long content at desktop and mobi
     record.answer,
   );
 });
+test("a second tab adopts newer saved data instead of overwriting it", async ({ context }) => {
+  const first = await context.newPage();
+  await choose(first, "Anna Kowalska");
+  await first.goto("/#/oferty");
+  const second = await context.newPage();
+  await second.goto("/#/app/profil");
+  await second.getByLabel("Imię i nazwisko").fill("Anna z drugiej karty");
+  await second.getByRole("button", { name: "Zapisz profil", exact: true }).click();
+  await expect(first.getByText(/Dane zmieniły się w innej karcie/)).toBeVisible();
+  await first
+    .getByRole("button", { name: /^Zapisz ofertę:/ })
+    .first()
+    .click();
+  const saved = await first.evaluate((key) => JSON.parse(localStorage.getItem(key)!), STORAGE_KEY);
+  expect(saved.people.find((p: { id: string }) => p.id === "candidate-anna").name).toBe(
+    "Anna z drugiej karty",
+  );
+  expect(saved.saved.length).toBeGreaterThan(0);
+});
+test("a render failure shows recovery steps instead of a blank page", async ({ page }) => {
+  await page.addInitScript(() => {
+    const original = Object.getOwnPropertyDescriptor(Intl.DateTimeFormat.prototype, "format")!;
+    Object.defineProperty(Intl.DateTimeFormat.prototype, "format", {
+      get() {
+        if ((window as { failRender?: boolean }).failRender) throw new Error("Simulated failure");
+        return original.get!.call(this);
+      },
+    });
+  });
+  await choose(page, "Anna Kowalska");
+  await page.evaluate(() => ((window as { failRender?: boolean }).failRender = true));
+  await page.goto("/#/oferty");
+  await expect(page.getByRole("heading", { name: "Coś poszło nie tak" })).toBeVisible();
+  const download = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Pobierz kopię danych" }).click();
+  expect((await download).suggestedFilename()).toBe("doroboty-scenariusz.json");
+  await expect(page.getByRole("link", { name: "zgłoś go na GitHubie" })).toHaveAttribute(
+    "href",
+    /issues\/new/,
+  );
+  await page.evaluate(() => ((window as { failRender?: boolean }).failRender = false));
+  await page.getByRole("button", { name: "Wróć do ofert" }).click();
+  await expect(page.getByRole("heading", { name: "Coś poszło nie tak" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /^Zapisz ofertę:/ }).first()).toBeVisible();
+});
+test("settings explain where to report a problem", async ({ page }) => {
+  await page.goto("/#/app/settings");
+  await expect(page.getByRole("link", { name: "Zgłoś problem na GitHubie" })).toHaveAttribute(
+    "href",
+    /issues\/new\?template=bug\.yml$/,
+  );
+});
+test("a section deep link stays aligned when content above grows after the first scroll", async ({
+  page,
+}) => {
+  // Reproduces the CI-only layout shift: content above #employer grows by 52px
+  // shortly after the page has already scrolled to the section. In CI the
+  // browser's scroll anchoring did not compensate (scrollY stayed put while the
+  // document grew), so it is disabled here to make the condition deterministic.
+  await page.addInitScript(() => {
+    document.addEventListener("DOMContentLoaded", () => {
+      const style = document.createElement("style");
+      style.textContent = "* { overflow-anchor: none !important; }";
+      document.head.append(style);
+    });
+    new MutationObserver((_, observer) => {
+      const hero = document.querySelector(".pp-offer-hero");
+      if (!hero) return;
+      observer.disconnect();
+      setTimeout(() => {
+        const late = document.createElement("div");
+        late.style.height = "52px";
+        hero.prepend(late);
+      }, 150);
+    }).observe(document, { childList: true, subtree: true });
+  });
+  await page.goto("/#/oferty/ai-product-manager#employer");
+  await expect(page.locator("#employer")).toBeFocused();
+  await page.waitForTimeout(400);
+  expect((await page.locator("#employer").boundingBox())!.y).toBeLessThan(50);
+});

@@ -1,7 +1,5 @@
 # Record sheets and process timelines — host components
 
-**Visual authority moved on 2026-11-06:** new and changed screens follow the `doroboty-screens` skill; see [GUI.md](../../GUI.md). These component contracts describe what is implemented in src/ today, not how a new screen should look.
-
 These components implement the shared employer and candidate process-view composition. See the [host catalog](HOST-COMPONENTS.md) for return links, application preview, hover and motion, and [status](STATUS.md) for unresolved findings. They extend the React host using Poster People typography, paper/white/ink/pink, existing controls and the r24 outlined reading surface. They are not a new release of the immutable v1 reference.
 
 ## RecordSheet
@@ -56,4 +54,4 @@ Validate keyboard tabs/focus, note retention, local PDF snapshot identity, custo
 
 ## MatchScore
 
-Owner: src/features/prototype/match-score.tsx; host styles: src/app/poster-people.css; host tokens: tokens.css. `score` is a validated domain percentage (integer 0–100). Reuse this noninteractive pill in both role lists/details and employer header metadata. The percentage remains visible text; color is supplementary. Preserve the existing band boundaries: 0–39 red (#ff6b79), 40–59 orange (#ffb15c), 60–79 yellow (#ffe45b), 80–100 vivid green (#00c853). All fills use ink text for contrast. Measured ink/fill contrast in the implementation task was 6.45:1 red, 9.89:1 orange, 13.95:1 yellow and 7.94:1 green; recheck after token changes. These dedicated host fact colors do not replace error/success action palettes or change the original kit. Do not implement a second score renderer or reuse an unrelated pink status tag. The underlying scenario score and summary remain unchanged.
+Owner: src/features/prototype/match-score.tsx; host styles: src/app/doroboty.css; host tokens: tokens.css. `score` is a validated domain value (integer 0–100). Reuse this noninteractive fact in both role lists/details and employer header metadata. **The score carries no color.** It renders as `NN/100` in IBM Plex Mono in ink, with no band, bar or progress indicator, and the colored 0–39/40–59/60–79/80–100 bands of the previous direction are gone. `ScoreLimitNote` from the same module is required wherever a score is visible: the score orders reading and does not predict who will do the job well. Do not implement a second score renderer, reintroduce a colored status tag or let the number stand without its note. The underlying scenario score and summary remain unchanged.

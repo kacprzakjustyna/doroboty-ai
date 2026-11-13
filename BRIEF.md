@@ -10,7 +10,7 @@ A participant can start with Node.js 24 and npm, extend the prototype and test a
 
 ## Behavior
 
-- Preserve Polish product UI, Build / Apply / Lead taxonomy, local assets and shared Base UI controls. New and changed UI follows the accepted Poster People [design system](docs/design-system/README.md); adapt its visual roles within the requested scope while preserving the product contract. Installing the reference does not itself convert current application styling.
+- Preserve Polish product UI, Build / Apply / Lead taxonomy, local assets and shared Base UI controls. New and changed UI follows the accepted [DoRoboty design system](docs/design-system/DOROBOTY.md); adapt its visual roles within the requested scope while preserving the product contract. Installing the reference does not itself convert current application styling.
 - Use prepared personas instead of real accounts. Candidate and employer views share one browser-local scenario.
 - Provide reset, validated import/export and recovery guidance.
 - Retain jobs, filters/list/map, companies, profiles, sample CVs, saved jobs, application drafts/submission and recruiting decisions.

@@ -327,13 +327,39 @@ export function JobPage() {
     const target =
       location.hash === "#role" ? "role" : location.hash === "#employer" ? "employer" : null;
     if (!target) return;
+    let settle: ResizeObserver | undefined;
+    let settleTimer: number | undefined;
+    const stopSettling = () => {
+      settle?.disconnect();
+      settle = undefined;
+      window.clearTimeout(settleTimer);
+      window.removeEventListener("wheel", stopSettling);
+      window.removeEventListener("touchstart", stopSettling);
+      window.removeEventListener("keydown", stopSettling);
+      window.removeEventListener("pointerdown", stopSettling);
+    };
     // Run after the shell's route focus handling, including direct deep links.
     const frame = requestAnimationFrame(() => {
       const section = document.getElementById(target);
-      section?.focus({ preventScroll: true });
-      section?.scrollIntoView({ behavior: "instant", block: "start" });
+      if (!section) return;
+      section.focus({ preventScroll: true });
+      const align = () => section.scrollIntoView({ behavior: "instant", block: "start" });
+      align();
+      // On a direct load, content above the section can still change height after
+      // this first scroll and push the section down. Keep it aligned while the
+      // layout settles, but stop as soon as the visitor scrolls, clicks or uses the keyboard.
+      settle = new ResizeObserver(align);
+      settle.observe(document.body);
+      window.addEventListener("wheel", stopSettling, { passive: true });
+      window.addEventListener("touchstart", stopSettling, { passive: true });
+      window.addEventListener("keydown", stopSettling);
+      window.addEventListener("pointerdown", stopSettling);
+      settleTimer = window.setTimeout(stopSettling, 1500);
     });
-    return () => cancelAnimationFrame(frame);
+    return () => {
+      cancelAnimationFrame(frame);
+      stopSettling();
+    };
   }, [location.hash, location.key, slug]);
   const { state, run } = usePrototype();
   const person = currentPerson(state);
