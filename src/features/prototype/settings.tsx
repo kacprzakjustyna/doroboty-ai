@@ -4,6 +4,7 @@ import { ConfirmDialog } from "@/components/confirm-dialog";
 import { usePrototype } from "./store";
 import { serializeState, MAX_IMPORT_BYTES } from "./storage";
 import { PageTitle } from "./shell";
+import { REPORT_PROBLEM_URL } from "./support";
 
 export function downloadText(name: string, text: string, type = "application/json") {
   const url = URL.createObjectURL(new Blob([text], { type }));
@@ -98,6 +99,18 @@ export function SettingsPage() {
         <p>
           Wybór osoby zastępuje logowanie. Propozycje AI, Match Score i podsumowania odtwarzają
           przygotowany scenariusz; nie oceniają kompetencji. Używaj przykładowych danych i CV.
+        </p>
+      </section>
+      <section className="prototype-panel prototype-form mt-6">
+        <h2>Zgłoś problem</h2>
+        <p>
+          Coś nie działa? Opisz, na jakiej stronie byłaś lub byłeś, jaką osobę wybrano i co się
+          stało. Nie wklejaj prawdziwych danych osobowych.
+        </p>
+        <p>
+          <a className="underline" href={REPORT_PROBLEM_URL} target="_blank" rel="noreferrer">
+            Zgłoś problem na GitHubie
+          </a>
         </p>
       </section>
       <ConfirmDialog
