@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from "react-router";
 import { CheckCircle2, FileText } from "lucide-react";
-import { ConfettiBurst, type ConfettiOrigin } from "@/components/confetti-burst";
 import { BackLink } from "@/components/back-link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,7 +12,7 @@ import { usePrototype } from "./store";
 import { currentPerson, publishedJobs, stageLabels, MIN_APPLICATION_ANSWER_LENGTH } from "./model";
 import { PageTitle, Empty, NotFound, Notice } from "./shell";
 import { CvAttachment } from "./cv-attachment";
-import { MatchScore } from "./match-score";
+import { MatchScore, ScoreLimitNote } from "./match-score";
 import { RecruitingApplication } from "./recruiting-application";
 import { CandidateApplication } from "./candidate-application";
 
@@ -246,7 +245,6 @@ export function ApplyPage() {
   const sendButton = useRef<HTMLButtonElement>(null);
   const submittedOnce = useRef(false);
   const [submitted, setSubmitted] = useState(false);
-  const [confettiOrigin, setConfettiOrigin] = useState<ConfettiOrigin | null>(null);
   useEffect(() => {
     if (!submitted) return;
     const delay = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 900;
@@ -284,11 +282,6 @@ export function ApplyPage() {
     if (run({ type: "submit", jobId: job!.id, notes, generated, answer, consent })) {
       submittedOnce.current = true;
       setSubmitted(true);
-      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        const rect = sendButton.current?.getBoundingClientRect();
-        if (rect)
-          setConfettiOrigin({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
-      }
     }
   }
   return (
@@ -406,7 +399,6 @@ export function ApplyPage() {
           </div>
         </form>
       </div>
-      <ConfettiBurst origin={confettiOrigin} />
     </section>
   );
 }
@@ -430,13 +422,14 @@ export function ApplicationsPage({ employer = false }: { employer?: boolean }) {
           <CheckCircle2 className="inline size-5" /> Aplikacja została wysłana.
         </Notice>
       )}
+      <ScoreLimitNote />
       <Field label={employer ? "Szukaj kandydata lub oferty" : "Szukaj oferty"}>
         <Input value={query} onChange={(e) => setQuery(e.target.value)} />
       </Field>
-      <div className="mt-6 space-y-4">
+      <ul className="prototype-rows">
         {applications.length ? (
           applications.map((a) => (
-            <article className="prototype-panel" key={a.id}>
+            <li className="prototype-row" key={a.id}>
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <Link
@@ -455,12 +448,14 @@ export function ApplicationsPage({ employer = false }: { employer?: boolean }) {
                 <MatchScore score={a.score} />
               </div>
               {employer && <p className="mt-4 text-muted-foreground">{a.summary}</p>}
-            </article>
+            </li>
           ))
         ) : (
-          <Empty>Brak aplikacji spełniających kryteria.</Empty>
+          <li>
+            <Empty>Brak aplikacji spełniających kryteria.</Empty>
+          </li>
         )}
-      </div>
+      </ul>
     </>
   );
 }

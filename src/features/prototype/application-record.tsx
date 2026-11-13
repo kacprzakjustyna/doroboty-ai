@@ -3,7 +3,7 @@ import { BackLink } from "@/components/back-link";
 import { ProcessTimeline } from "@/components/process-timeline";
 import { RecordSheet } from "@/components/record-sheet";
 import { CvAttachment } from "./cv-attachment";
-import { MatchScore } from "./match-score";
+import { MatchScore, ScoreLimitNote } from "./match-score";
 import { stageLabels, type Application, type Stage } from "./model";
 
 type RecordEvent = { stage: Stage; at: string; note?: string };
@@ -63,6 +63,7 @@ export function ApplicationRecord({
             </span>
           )}
         </div>
+        <ScoreLimitNote />
       </header>
       <div className="recruiting-layout">
         <RecordSheet

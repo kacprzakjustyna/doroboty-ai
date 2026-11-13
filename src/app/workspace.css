@@ -58,9 +58,9 @@ a {
   z-index: 100;
   left: 16px;
   top: -100px;
-  padding: var(--gui-space-s);
-  background: var(--primary);
-  color: var(--primary-foreground);
+  padding: var(--gui-space-s) var(--gui-space-m);
+  background: var(--gui-ink);
+  color: var(--gui-paper);
   border-radius: var(--gui-radius-s);
 }
 .skip-link:focus {
@@ -83,22 +83,15 @@ a {
 .brand {
   display: flex;
   align-items: center;
-  gap: var(--gui-space-xs);
   font-size: var(--gui-text-l);
-  font-weight: 600;
-  line-height: var(--gui-leading-l);
-  letter-spacing: var(--gui-tracking-s);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
   white-space: nowrap;
 }
-.brand-mark {
+.brand__lockup {
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  background: var(--gui-color-1);
-  color: var(--gui-accent-text);
-  border-radius: var(--gui-radius-s);
+  align-items: baseline;
 }
 .workspace-label {
   display: flex;

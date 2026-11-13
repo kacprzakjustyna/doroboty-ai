@@ -3,21 +3,21 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-[var(--gui-radius-s)] border-0 font-semibold whitespace-nowrap outline-none select-none transition-[transform,background-color,color,opacity] [transition-duration:var(--gui-motion-small)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--gui-focus)] active:not-aria-[haspopup]:translate-y-[var(--gui-press-offset)] disabled:pointer-events-none disabled:bg-[var(--gui-control-disabled)] disabled:text-[var(--gui-neutral-6)] disabled:opacity-100 aria-invalid:outline-2 aria-invalid:outline-[var(--gui-error)] [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-[var(--gui-radius-s)] border-0 font-medium whitespace-nowrap outline-none select-none transition-[transform,background-color,color,opacity] [transition-duration:var(--gui-motion-small)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--gui-focus)] active:not-aria-[haspopup]:translate-y-[var(--gui-press-offset)] disabled:pointer-events-none disabled:bg-[var(--gui-control-disabled)] disabled:text-[var(--gui-neutral-6)] disabled:opacity-100 aria-invalid:outline-2 aria-invalid:outline-[var(--gui-error)] [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
         default:
-          "bg-[var(--gui-color-1)] text-[var(--gui-text)] [--control-hover-bg:#ffacef] shadow-[var(--gui-edge-shadow)]",
+          "bg-[var(--gui-color-1)] text-[var(--gui-accent-text)] [--control-hover-bg:var(--gui-signal-hover)] shadow-[inset_0_0_0_1px_var(--gui-color-1)]",
         outline:
-          "bg-white shadow-[var(--gui-edge-shadow)] text-[var(--gui-text)] [--control-hover-bg:var(--gui-color-1-transparent)] aria-expanded:bg-[var(--gui-neutral-3-transparent)]",
+          "bg-transparent shadow-[inset_0_0_0_1px_var(--gui-edge-strong)] text-[var(--gui-text)] [--control-hover-bg:var(--gui-surface-raised)] aria-expanded:bg-[var(--gui-surface-raised)]",
         secondary:
-          "bg-[var(--gui-surface-muted)] text-[var(--gui-text)] [--control-hover-bg:var(--gui-neutral-4)] aria-expanded:bg-[var(--gui-neutral-4-transparent)]",
+          "bg-[var(--gui-surface-muted)] shadow-[var(--gui-edge-shadow)] text-[var(--gui-text)] [--control-hover-bg:var(--gui-neutral-4)] aria-expanded:bg-[var(--gui-neutral-4)]",
         ghost:
-          "bg-transparent text-[var(--gui-text)] [--control-hover-bg:var(--gui-color-1-transparent)]",
+          "bg-transparent text-[var(--gui-text)] [--control-hover-bg:var(--gui-surface-raised)]",
         destructive:
-          "bg-[var(--gui-error)] [--control-hover-bg:color-mix(in_srgb,var(--gui-error)_85%,var(--gui-text))] text-[var(--gui-neutral-10)] focus-visible:outline-[var(--gui-focus)]",
-        link: "bg-transparent px-0 text-[var(--gui-link)] underline-offset-4 hover:underline [--control-hover-bg:var(--gui-color-1-transparent)]",
+          "bg-[var(--gui-error)] [--control-hover-bg:color-mix(in_srgb,var(--gui-error)_85%,var(--gui-text))] text-[var(--gui-paper)] focus-visible:outline-[var(--gui-focus)]",
+        link: "bg-transparent px-0 text-[var(--gui-link)] underline-offset-4 hover:underline [--control-hover-bg:transparent]",
       },
       size: {
         default:

@@ -22,11 +22,12 @@
   left: auto;
 }
 .pp-search-submit {
-  border: 1px solid var(--pp-ink);
-  border-radius: 18px;
+  border: 1px solid var(--pp-action);
+  border-radius: var(--gui-radius-s);
   background: var(--pp-action);
-  font-size: 14px;
-  font-weight: 600;
+  color: var(--pp-action-text);
+  font-size: 15px;
+  font-weight: 500;
   line-height: 1.5;
   letter-spacing: normal;
   box-shadow: none;
@@ -35,22 +36,24 @@
   min-width: 0;
 }
 .pp-sort-label {
+  font-family: var(--pp-font-data);
   font-size: 12px;
   color: var(--pp-muted);
 }
 .pp-view-link {
+  font-family: var(--pp-font-data);
   font-size: 12px;
-  padding: 8px;
-  border-radius: 10px;
+  padding: 8px 12px;
+  border-radius: var(--pp-radius-pill);
 }
 .pp-view-link[aria-current="page"] {
   background: var(--pp-ink);
-  color: white;
+  color: var(--gui-paper);
 }
 .pp-filter-button {
-  border: 1px solid var(--pp-ink);
-  border-radius: 18px;
-  background: white;
+  border: 1px solid var(--pp-line);
+  border-radius: var(--pp-radius-pill);
+  background: var(--pp-paper);
 }
 .pp-filter-dialog[data-slot="dialog-content"] {
   inset: 0;
@@ -66,7 +69,7 @@
   gap: 0;
   border: 0;
   overflow: hidden;
-  background: white;
+  background: var(--pp-paper);
 }
 .pp-filter-dialog .pp-dialog-heading {
   flex-shrink: 0;
@@ -92,7 +95,7 @@
   margin: 25px 0 0 22px;
   width: 43px;
   height: 43px;
-  border: 1px solid var(--pp-ink);
+  border: 1px solid var(--pp-line);
   border-radius: 18px;
   background: var(--pp-paper);
   font-size: 17px;
@@ -107,9 +110,9 @@
 .pp-offer-identity > [data-company-logo] {
   width: 60px;
   height: 60px;
-  border: 1px solid var(--pp-ink);
-  border-radius: 18px;
-  background: var(--pp-fact);
+  border: 1px solid var(--pp-line);
+  border-radius: var(--pp-radius-s, 6px);
+  background: var(--pp-surface-raised);
 }
 .pp-offer-identity .pp-icon {
   width: 15px;
@@ -160,7 +163,7 @@
 .pp-offer-employer [data-company-logo] {
   width: 55px;
   height: 55px;
-  border: 1px solid var(--pp-ink);
+  border: 1px solid var(--pp-line);
   border-radius: 16px;
 }
 .pp-employer-copy a {
@@ -271,7 +274,7 @@
 }
 .pp-page-button[aria-current="page"] {
   background: var(--pp-ink);
-  color: white;
+  color: var(--gui-paper);
 }
 @media (max-width: 360px) {
   header a[aria-label="DoRoboty.ai — strona główna"] {

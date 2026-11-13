@@ -1,257 +1,225 @@
-/* Poster People host adaptation. Reference kit remains immutable. */
+/* DoRoboty design system — host token layer.
+   Values are the measured landing tokens (DESIGN.md §3.1/§3.2, ported in
+   docs/design-system/DOROBOTY.md): warm paper, ink, one orange signal.
+   Rules that must survive any later edit here:
+   - --gui-accent (#ff4a1c) is a background/shape color only. Orange letters on
+     light paper are always --gui-accent-text-on-light (#c2350f); text on orange
+     is always --gui-accent-text (#121417).
+   - Depth comes from paper tones and 1px lines. No blurred shadows.
+   - Errors use --gui-error, never the signal. The match score gets no color. */
 :root {
   color-scheme: light;
 
-  --theme-name: "Poster People";
+  --theme-name: "DoRoboty";
   --theme-icon-family: "Lucide";
   --theme-icon-style: "outlined";
   --icon-light-display: none;
   --icon-regular-display: inline;
   --icon-bold-display: none;
 
-  --gui-font-brand: "Geist Serif", Georgia, serif;
-  --gui-font-ui: Arial, Helvetica, system-ui, sans-serif;
-  --gui-font-editorial: "Geist Serif", Georgia, serif;
-  --gui-font-data: Arial, Helvetica, system-ui, sans-serif;
+  /* Space Grotesk carries headings, body and controls; IBM Plex Mono carries data. */
+  --gui-font-brand:
+    "Space Grotesk", ui-sans-serif, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --gui-font-ui: "Space Grotesk", ui-sans-serif, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --gui-font-editorial:
+    "Space Grotesk", ui-sans-serif, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --gui-font-data: "IBM Plex Mono", ui-monospace, Consolas, "Courier New", monospace;
   --font-ui: var(--gui-font-ui);
   --font-brand: var(--gui-font-brand);
   --font-editorial: var(--gui-font-editorial);
   --font-data: var(--gui-font-data);
   --weight-ui-regular: 400;
   --weight-ui-medium: 500;
-  --weight-ui-heavy: 600;
+  --weight-ui-heavy: 700;
   --weight-brand-regular: 400;
-  --weight-brand-medium: 400;
-  --weight-brand-heavy: 400;
+  --weight-brand-medium: 500;
+  --weight-brand-heavy: 700;
   --weight-editorial-regular: 400;
   --weight-editorial-medium: 500;
-  --weight-editorial-heavy: 600;
+  --weight-editorial-heavy: 700;
   --weight-data-regular: 400;
   --weight-data-medium: 500;
-  --weight-data-heavy: 600;
+  --weight-data-heavy: 500;
   --font-body: var(--gui-font-ui);
   --font-display: var(--gui-font-brand);
   --font-interface: var(--gui-font-ui);
   --font-code: var(--gui-font-data);
+  /* Data role: labels, prices, units, dates, locations, counters, score, status. */
+  --font-mono-data: var(--gui-font-data);
 
   --gui-space-zero: 0;
-  --gui-space-xxs: 5px;
-  --gui-space-xs: 10px;
-  --gui-space-s: 14px;
-  --gui-space-m: 19px;
-  --gui-space-l: 29px;
-  --gui-space-xl: 39px;
-  --gui-space-xxl: 58px;
+  --gui-space-xxs: 4px;
+  --gui-space-xs: 8px;
+  --gui-space-s: 12px;
+  --gui-space-m: 16px;
+  --gui-space-l: 24px;
+  --gui-space-xl: 32px;
+  --gui-space-xxl: 56px;
   --space-xs: var(--gui-space-xxs);
   --space-sm: var(--gui-space-xs);
   --space-md: var(--gui-space-m);
   --space-lg: var(--gui-space-l);
   --space-xl: var(--gui-space-xl);
   --space-2xl: var(--gui-space-xxl);
+  /* Content column and gutter from the measured landing. */
+  --gui-content-max: 1080px;
+  --gui-gutter: 22px;
 
-  --gui-text-xxs: 11px;
-  --gui-leading-xxs: 15px;
+  --gui-text-xxs: 11.5px;
+  --gui-leading-xxs: 18px;
   --gui-text-xs: 13px;
-  --gui-leading-xs: 17px;
+  --gui-leading-xs: 20px;
   --gui-text-s: 15px;
-  --gui-leading-s: 21px;
+  --gui-leading-s: 24px;
   --gui-text-m: 17px;
-  --gui-leading-m: 26px;
-  --gui-text-l: 26px;
-  --gui-leading-l: 34px;
-  --gui-text-xl: 39px;
-  --gui-leading-xl: 43px;
-  --gui-text-xxl: 52px;
-  --gui-leading-xxl: 56px;
-  --gui-tracking-xs: -0.02em;
-  --gui-tracking-s: -0.01em;
+  --gui-leading-m: 27px;
+  --gui-text-l: 20px;
+  --gui-leading-l: 28px;
+  --gui-text-xl: 32px;
+  --gui-leading-xl: 36px;
+  --gui-text-xxl: 48px;
+  --gui-leading-xxl: 52px;
+  --gui-tracking-xs: -0.03em;
+  --gui-tracking-s: -0.02em;
   --gui-tracking-m: 0;
-  --gui-tracking-l: 0.01em;
-  --gui-tracking-xl: 0.02em;
+  --gui-tracking-l: 0;
+  /* Mono labels and uppercase eyebrows. */
+  --gui-tracking-xl: 0.08em;
+  --gui-tracking-eyebrow: 0.12em;
 
   --gui-radius-zero: 0;
-  --gui-radius-xs: 5px;
-  --gui-radius-s: 18px;
-  --gui-radius-m: 24px;
-  --gui-radius-l: 24px;
-  --gui-radius-xl: 24px;
+  /* 6px for buttons and fields, 14px for cards, 999px for choices and tags. */
+  --gui-radius-xs: 6px;
+  --gui-radius-s: 6px;
+  --gui-radius-m: 14px;
+  --gui-radius-l: 14px;
+  --gui-radius-xl: 14px;
   --gui-radius-full: 9999px;
   --radius: var(--gui-radius-s);
 
-  --gui-neutral-1: #ffffff;
-  --gui-neutral-1-transparent: #ffffff33;
-  --gui-neutral-2: #ffffff;
-  --gui-neutral-2-transparent: #fbfbfb33;
-  --gui-neutral-3: #f4f4f0;
-  --gui-neutral-3-transparent: #f4f4f433;
-  --gui-neutral-4: #d8d5d1;
-  --gui-neutral-4-transparent: #e7e7e733;
-  --gui-neutral-5: #cdcdcd;
-  --gui-neutral-5-transparent: #cdcdcd33;
-  --gui-neutral-6: #a1a1a1;
-  --gui-neutral-6-transparent: #a1a1a133;
-  --gui-neutral-7: #7d7d7d;
-  --gui-neutral-7-transparent: #7d7d7d33;
-  --gui-neutral-8: #5e5a5c;
-  --gui-neutral-8-transparent: #55555533;
-  --gui-neutral-9: #333333;
-  --gui-neutral-9-transparent: #33333333;
-  --gui-neutral-10: #181818;
-  --gui-color-1: #ff90e8;
-  --gui-color-2: #181818;
-  --gui-color-2-transparent: #085e5533;
-  --gui-color-3: #ffe45b;
-  --gui-color-3-transparent: #ffed9b33;
-  --gui-color-4: #ffb5aa;
-  --gui-color-4-transparent: #ffb5aa33;
-  /* Noninteractive Match Score facts: red → orange → yellow → vivid green. */
-  --gui-match-red: #ff6b79;
-  --gui-match-orange: #ffb15c;
-  --gui-match-yellow: #ffe45b;
-  --gui-match-green: #00c853;
-  --gui-success: #00906c;
-  --gui-warning: #ffea00;
-  --gui-warning-transparent: #ffea0033;
-  --gui-error: #fc032d;
-  --gui-neutral-10-transparent: #00000033;
-  --gui-backdrop: #18181899;
-  --gui-color-1-transparent: #ffe0f7;
-  --gui-success-transparent: #00906c33;
-  --gui-error-transparent: #fc032d33;
+  /* Paper → ink ramp. No pure white: the system has none. */
+  --gui-paper: #f2efe9;
+  --gui-paper-2: #e8e4db;
+  --gui-ink: #121417;
+  --gui-ink-2: #3a3f44;
+  --gui-line: #d6d1c6;
+  --gui-neutral-1: #f2efe9;
+  --gui-neutral-1-transparent: #f2efe933;
+  --gui-neutral-2: #f2efe9;
+  --gui-neutral-2-transparent: #f2efe933;
+  --gui-neutral-3: #e8e4db;
+  --gui-neutral-3-transparent: #e8e4db33;
+  --gui-neutral-4: #d6d1c6;
+  --gui-neutral-4-transparent: #d6d1c633;
+  --gui-neutral-5: #d6d1c6;
+  --gui-neutral-5-transparent: #d6d1c633;
+  --gui-neutral-6: #6e6a61;
+  --gui-neutral-6-transparent: #6e6a6133;
+  --gui-neutral-7: #6e6a61;
+  --gui-neutral-7-transparent: #6e6a6133;
+  --gui-neutral-8: #3a3f44;
+  --gui-neutral-8-transparent: #3a3f4433;
+  --gui-neutral-9: #3a3f44;
+  --gui-neutral-9-transparent: #3a3f4433;
+  --gui-neutral-10: #121417;
+  --gui-neutral-10-transparent: #12141733;
+  --gui-backdrop: #12141799;
 
-  --gui-canvas: #f4f4f0;
-  --gui-surface: var(--gui-neutral-2);
-  --gui-surface-muted: var(--gui-neutral-3);
-  --gui-text: var(--gui-neutral-10);
-  --gui-text-muted: #5e5a5c;
-  --gui-text-muted-accessible: var(--gui-neutral-8);
-  --gui-edge: #181818;
+  /* The one signal. Background and shapes only. */
+  --gui-color-1: #ff4a1c;
+  --gui-color-1-transparent: #fbe1d5;
+  --gui-signal-wash: #fbe1d5;
+  --gui-signal-hover: #fd6841;
+  --gui-color-2: #121417;
+  --gui-color-2-transparent: #12141733;
+  --gui-color-3: #e8e4db;
+  --gui-color-3-transparent: #e8e4db33;
+  --gui-color-4: #fbe1d5;
+  --gui-color-4-transparent: #fbe1d533;
+  /* The match score is a fact in ink, never a color band. */
+  --gui-score-text: #121417;
+  --gui-score-note: #6e6a61;
+  /* Success has no green in this system: ink edge, paper surface. */
+  --gui-success: #121417;
+  --gui-success-transparent: #e8e4db;
+  --gui-warning: #121417;
+  --gui-warning-transparent: #fbe1d5;
+  --gui-error: #b42318;
+  --gui-error-transparent: #b4231814;
+
+  --gui-canvas: #f2efe9;
+  --gui-surface: #f2efe9;
+  /* Raised card/panel surface. */
+  --gui-surface-raised: #e8e4db;
+  --gui-surface-muted: #e8e4db;
+  --gui-surface-hover: #e8e4db;
+  --gui-text: #121417;
+  --gui-text-muted: #6e6a61;
+  --gui-text-muted-accessible: #3a3f44;
+  --gui-text-body: #3a3f44;
+  --gui-edge: #d6d1c6;
+  /* Ink contour for emphasis: dialogs, selected rows, the default choice. */
+  --gui-edge-strong: #121417;
   --gui-accent: var(--gui-color-1);
-  --gui-accent-text: #181818;
-  /* Dark labels on pink actions. */
-  --gui-accent-text-accessible: var(--gui-neutral-10);
+  /* Label on an orange surface — 5.5 : 1. */
+  --gui-accent-text: #121417;
+  --gui-accent-text-accessible: #121417;
+  /* Orange letters on light paper — 4.8 : 1. Plain --gui-accent is 2.9 : 1 and is never text. */
+  --gui-accent-text-on-light: #c2350f;
   --gui-danger: var(--gui-error);
-  --gui-focus: #181818;
-  --gui-link: var(--gui-color-2);
-  --gui-control: #ffffff;
-  --gui-control-hover: var(--gui-neutral-4);
-  --gui-control-disabled: var(--gui-neutral-3);
-  --gui-control-readonly: var(--gui-neutral-2);
+  --gui-focus: #c2350f;
+  --gui-link: #121417;
+  --gui-control: #f2efe9;
+  --gui-control-hover: #e8e4db;
+  --gui-control-disabled: #e8e4db;
+  --gui-control-readonly: #e8e4db;
 
   --gui-shadow-none: none;
-  --gui-shadow-s: 0 2px 4px 0 #00000000;
-  --gui-shadow-m: inset 0 0 0 1px #181818;
-  --gui-shadow-l: 0 16px 48px 0 #00000000;
-  /* Visible ink contours; no offset shadows. */
-  --gui-edge-shadow: inset 0 0 0 1px #181818;
+  --gui-shadow-s: none;
+  --gui-shadow-m: inset 0 0 0 1px var(--gui-edge);
+  --gui-shadow-l: none;
+  /* 1px lines carry depth; nothing in this system is blurred. */
+  --gui-edge-shadow: inset 0 0 0 1px var(--gui-edge);
+  --gui-edge-strong-shadow: inset 0 0 0 1px var(--gui-edge-strong);
   --gui-divider-top-shadow: inset 0 1px var(--gui-edge);
   --gui-divider-bottom-shadow: inset 0 -1px var(--gui-edge);
   --gui-divider-inline-end-shadow: inset -1px 0 var(--gui-edge);
   --gui-accent-edge-shadow: none;
-  --gui-accent-bar-shadow: inset 4px 0 var(--gui-color-1);
-  --gui-control-shadow: inset 0 0 0 1px #181818;
+  /* Default-choice marker: 4px signal bar inside an ink contour. */
+  --gui-accent-bar-shadow: inset 0 4px var(--gui-color-1);
+  --gui-accent-side-bar-shadow: inset 3px 0 var(--gui-color-1);
+  --gui-control-shadow: inset 0 0 0 1px var(--gui-edge);
   --gui-control-hover-shadow: none;
   --gui-control-focus-shadow: none;
-  --gui-control-invalid-shadow: none;
+  --gui-control-invalid-shadow: inset 0 0 0 1px var(--gui-error);
   --gui-control-valid-shadow: none;
 
-  --gui-motion-small: 400ms
-    linear(
-      0,
-      0.2375,
-      0.5904,
-      0.8358,
-      0.9599,
-      1.0061,
-      1.0152,
-      1.0116,
-      1.0062,
-      1.0025,
-      1.0006,
-      0.9999,
-      1
-    );
-  --gui-motion-large: 600ms
-    linear(
-      0,
-      0.0846,
-      0.2691,
-      0.4778,
-      0.6674,
-      0.8179,
-      0.9249,
-      0.9926,
-      1.0293,
-      1.0442,
-      1.0452,
-      1.0388,
-      1.0296,
-      1.0202,
-      1.0121,
-      1.0061,
-      1.0019,
-      0.9995,
-      0.9983,
-      1
-    );
-  --gui-scale-enter: 0.96;
+  /* Control state transitions only, 120–200ms, linear. No springs, no overshoot. */
+  --gui-motion-small: 120ms linear;
+  --gui-motion-large: 200ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  --gui-scale-enter: 1;
   --gui-press-offset: 1px;
-  --motion-duration: 400ms;
-  --motion-easing: linear(
-    0,
-    0.2375,
-    0.5904,
-    0.8358,
-    0.9599,
-    1.0061,
-    1.0152,
-    1.0116,
-    1.0062,
-    1.0025,
-    1.0006,
-    0.9999,
-    1
-  );
-  --motion-large-duration: 600ms;
-  --motion-large-easing: linear(
-    0,
-    0.0846,
-    0.2691,
-    0.4778,
-    0.6674,
-    0.8179,
-    0.9249,
-    0.9926,
-    1.0293,
-    1.0442,
-    1.0452,
-    1.0388,
-    1.0296,
-    1.0202,
-    1.0121,
-    1.0061,
-    1.0019,
-    0.9995,
-    0.9983,
-    1
-  );
-  --motion-popup-scale: 0.96;
+  --motion-duration: 120ms;
+  --motion-easing: linear;
+  --motion-large-duration: 200ms;
+  --motion-large-easing: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --motion-popup-scale: 1;
   --motion-press-distance: 1px;
-  --ease-out: linear(0, 0.38, 0.68, 0.85, 0.94, 0.98, 1.01, 1.01, 1);
-  --ease-in: linear(0, 0.03, 0.09, 0.21, 0.4, 0.64, 0.84, 1);
-  --ease-in-out: linear(0, 0.16, 0.43, 0.72, 0.9, 0.98, 1.01, 1);
-  --dur-short: 160ms;
-  --icon-stroke-width: 2;
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0.2, 0.1, 1);
+  --ease-in-out: cubic-bezier(0.4, 0.2, 0.1, 1);
+  --dur-short: 120ms;
+  --icon-stroke-width: 1.65;
 
   /* shadcn semantic bridge */
   --background: var(--gui-canvas);
   --foreground: var(--gui-text);
-  --card: var(--gui-surface);
+  --card: var(--gui-surface-raised);
   --card-foreground: var(--gui-text);
-  --popover: var(--gui-neutral-1);
+  --popover: var(--gui-paper);
   --popover-foreground: var(--gui-text);
-  --primary: #ff90e8;
-  --primary-foreground: #181818;
+  --primary: var(--gui-color-1);
+  --primary-foreground: var(--gui-accent-text);
   --secondary: var(--gui-surface-muted);
   --secondary-foreground: var(--gui-text);
   --muted: var(--gui-surface-muted);
@@ -263,18 +231,29 @@
   --input: var(--gui-control);
   --ring: var(--gui-focus);
   --chart-1: var(--gui-color-1);
-  --chart-2: var(--gui-color-2);
-  --chart-3: var(--gui-color-3);
-  --chart-4: var(--gui-color-4);
-  --chart-5: var(--gui-neutral-7);
+  --chart-2: var(--gui-ink);
+  --chart-3: var(--gui-ink-2);
+  --chart-4: var(--gui-neutral-6);
+  --chart-5: var(--gui-line);
   --sidebar: var(--gui-surface);
   --sidebar-foreground: var(--gui-text);
   --sidebar-primary: var(--gui-neutral-10);
-  --sidebar-primary-foreground: var(--gui-neutral-1);
+  --sidebar-primary-foreground: var(--gui-paper);
   --sidebar-accent: var(--gui-color-1);
   --sidebar-accent-foreground: var(--gui-accent-text);
   --sidebar-border: var(--gui-edge);
   --sidebar-ring: var(--gui-focus);
   --color-success: var(--gui-success);
   --color-success-bg: var(--gui-success-transparent);
+}
+
+@media (min-width: 720px) {
+  :root {
+    --gui-gutter: 40px;
+  }
+}
+@media (min-width: 1100px) {
+  :root {
+    --gui-gutter: 56px;
+  }
 }

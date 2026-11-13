@@ -137,7 +137,7 @@ test("published job → saved offer/draft → submitted application → employer
   await page.reload();
   await page.getByRole("link", { name: "Product Designer do automatyzacji", exact: true }).click();
   const candidateUrl = page.url();
-  await expect(page.getByText("Match Score: 84%", { exact: true })).toBeVisible();
+  await expect(page.locator(".match-score")).toHaveText("Ocena dopasowania tekstu: 84/100");
   await choose(page, "Karolina Wiśniewska");
   await page.getByRole("link", { name: "Kandydaci", exact: true }).click();
   await page.getByRole("link", { name: "Anna Kowalska", exact: true }).click();
@@ -289,7 +289,7 @@ test("mobile navigation, light-only appearance and keyboard person selection", a
   await page.reload();
   await expect(page.getByRole("combobox", { name: "Motyw" })).toHaveCount(0);
   await expect(page.locator("html")).not.toHaveClass(/dark/);
-  await expect(page.locator("body")).toHaveCSS("background-color", "rgb(244, 244, 240)");
+  await expect(page.locator("body")).toHaveCSS("background-color", "rgb(242, 239, 233)");
   await page.screenshot({ path: "artifacts/settings-mobile-light.png", fullPage: true });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
@@ -458,14 +458,14 @@ test("legacy dark preference keeps scenario data and renders the light interface
     "Zachowaj mój profil",
   );
   await expect(page.locator("html")).not.toHaveClass(/dark/);
-  await expect(page.locator("body")).toHaveCSS("background-color", "rgb(244, 244, 240)");
+  await expect(page.locator("body")).toHaveCSS("background-color", "rgb(242, 239, 233)");
   await page.getByRole("button", { name: "Zapisz profil", exact: true }).click();
   expect(
     await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!).theme, STORAGE_KEY),
   ).toBeUndefined();
 });
 
-test("Poster People offer keeps desktop conditions/actions and places them before mobile reading", async ({
+test("offer keeps desktop conditions/actions and places them before mobile reading", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
@@ -576,11 +576,11 @@ test("desktop reset synchronizes search, category and facets with the URL", asyn
   );
 });
 
-test("canonical marketplace typography and search geometry match Poster People breakpoints", async ({
+test("canonical marketplace typography and search geometry match the design system", async ({
   page,
 }) => {
   for (const [width, title, card] of [
-    [1280, "72px", "28px"],
+    [1280, "76px", "28px"],
     [1100, "58px", "26px"],
     [850, "52px", "28px"],
     [390, "43px", "26px"],
@@ -648,39 +648,60 @@ for (const width of [1280, 390])
     await expect(page.getByRole("textbox", { name: "Szukaj ofert", exact: true })).toHaveValue("");
   });
 
-test("homepage surfaces and marketplace action type roles match the shared reference", async ({
+test("surfaces, signal and data roles follow the design system at every width", async ({
   page,
 }) => {
+  const PAPER = "rgb(242, 239, 233)";
+  const PAPER_2 = "rgb(232, 228, 219)";
+  const INK = "rgb(18, 20, 23)";
+  const LINE = "rgb(214, 209, 198)";
+  const SIGNAL = "rgb(255, 74, 28)";
+
   await page.goto("/#/");
+  await expect(page.locator("body")).toHaveCSS("background-color", PAPER);
   const cards = page.locator("main article.prototype-panel");
   await expect(cards).toHaveCount(3);
   for (const card of await cards.all()) {
-    await expect(card).toHaveCSS("border-radius", "24px");
-    await expect(card).toHaveCSS("box-shadow", /rgb\(24, 24, 24\).*1px inset/);
+    // Cards: 14px radius, one hairline, depth from paper tone — never a blurred shadow.
+    await expect(card).toHaveCSS("border-radius", "14px");
+    await expect(card).toHaveCSS("background-color", PAPER_2);
+    await expect(card).toHaveCSS("box-shadow", `${LINE} 0px 0px 0px 1px inset`);
   }
-  for (const [width, searchSize, offerSize, payLine] of [
-    [1280, "14px", "14px", "34.8px"],
-    [1100, "14px", "13px", "31.9px"],
-    [850, "12px", "12px", "29px"],
-    [700, "12px", "14px", "36.25px"],
-    [600, "12px", "14px", "33.75px"],
-    [390, "12px", "14px", "33.75px"],
-  ] as const) {
+
+  for (const width of [1280, 1100, 850, 700, 600, 390] as const) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/#/oferty");
+    // One signal action per view: the search submit carries orange, with an ink label.
     const search = page.getByRole("button", { name: "Szukaj", exact: true });
-    await expect(search).toHaveCSS("font-size", searchSize);
-    await expect(search).toHaveCSS("font-weight", "600");
-    await expect(search).toHaveCSS("letter-spacing", "normal");
-    await expect(search).toHaveCSS("line-height", `${parseInt(searchSize) * 1.5}px`);
+    await expect(search).toHaveCSS("background-color", SIGNAL);
+    await expect(search).toHaveCSS("color", INK);
+    await expect(search).toHaveCSS("border-radius", "6px");
     await expect(search).toHaveCSS("border-top-width", "1px");
-    await expect(search).toHaveCSS("box-shadow", "none");
+    await expect(search).toHaveCSS("border-top-color", SIGNAL);
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
+    ).toBe(true);
+    expect(
+      await page.evaluate(
+        () =>
+          [...document.querySelectorAll("a, button")].filter((element) => {
+            const box = element.getBoundingClientRect();
+            return (
+              getComputedStyle(element).backgroundColor === "rgb(255, 74, 28)" &&
+              box.top < window.innerHeight &&
+              box.width > 40 &&
+              box.height > 24
+            );
+          }).length,
+      ),
+    ).toBeLessThanOrEqual(1);
+
     await page.goto("/#/oferty/ai-product-manager");
-    const action = page.locator(".pp-offer-actions a").first();
-    await expect(action).toHaveCSS("font-size", offerSize);
-    await expect(action).toHaveCSS("font-weight", "600");
-    await expect(action).toHaveCSS("line-height", `${parseInt(offerSize) * 1.5}px`);
-    await expect(page.locator(".pp-offer-pay .pp-salary-tag")).toHaveCSS("line-height", payLine);
+    // Pay is a fact: IBM Plex Mono in ink, with no colored tag behind it.
+    const pay = page.locator(".pp-offer-pay .pp-salary-tag");
+    await expect(pay).toHaveCSS("font-family", /IBM Plex Mono/);
+    await expect(pay).toHaveCSS("color", INK);
+    await expect(pay).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
   }
 });
 
@@ -690,9 +711,9 @@ test("process sheet keeps notes across keyboard tabs and saves stage history wit
   await choose(page, "Karolina Wiśniewska");
   await page.goto("/#/app/kandydaci/application-example");
   const note = page.getByLabel("Notatka rekrutacyjna (widoczna pracodawcy)");
-  await expect(
-    page.locator(".record-meta").getByText("Match Score: 72%", { exact: true }),
-  ).toBeVisible();
+  await expect(page.locator(".record-meta .match-score")).toHaveText(
+    "Ocena dopasowania tekstu: 72/100",
+  );
   await expect(page.getByText("Wynik przykładowy", { exact: true })).toHaveCount(0);
   await expect(page.locator("iframe[title='Podgląd CV (PDF)']")).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Pobierz CV (PDF)", exact: true })).toHaveCount(0);
@@ -839,7 +860,7 @@ for (const width of [1280, 390]) {
 }
 
 for (const reducedMotion of ["no-preference", "reduce"] as const) {
-  test(`submission celebrates only once after success with motion ${reducedMotion}`, async ({
+  test(`submission is recorded only once after success with motion ${reducedMotion}`, async ({
     page,
   }) => {
     await page.emulateMedia({ reducedMotion });
@@ -863,17 +884,7 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
     await page.getByRole("button", { name: "Wyślij aplikację", exact: true }).click();
     await expect(page.getByRole("button", { name: "Wysłano!", exact: true })).toBeDisabled();
     await expect(answer).toBeDisabled();
-    if (reducedMotion === "no-preference") {
-      await expect(page.locator(".confetti-burst")).toHaveAttribute("aria-hidden", "true");
-      expect(
-        await page
-          .locator(".confetti-burst")
-          .evaluate((element) => getComputedStyle(element).pointerEvents),
-      ).toBe("none");
-      await expect(page.locator(".confetti-burst span")).toHaveCount(30);
-    } else {
-      await expect(page.locator(".confetti-burst")).toHaveCount(0);
-    }
+    await expect(page.locator(".confetti-burst")).toHaveCount(0);
     await page.locator("form").dispatchEvent("submit");
     expect(
       await page.evaluate(
@@ -921,7 +932,7 @@ test("candidate record shares snapshot tabs while excluding employer notes and m
   await expect(
     page.getByRole("heading", { level: 1, name: record.jobTitle, exact: true }),
   ).toBeVisible();
-  await expect(page.locator(".record-meta")).toContainText("Match Score: 72%");
+  await expect(page.locator(".record-meta")).toContainText("72/100");
   await expect(page.locator("main")).not.toContainText(record.events[1].note);
   await expect(page.locator("main")).not.toContainText(record.sourceNotes);
   await expect(page.locator("main")).not.toContainText(record.generatedAnswer);
