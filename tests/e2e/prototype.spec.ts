@@ -3,6 +3,18 @@ import AxeBuilder from "@axe-core/playwright";
 import { initialState } from "../../src/features/prototype/model";
 import { STORAGE_KEY } from "../../src/features/prototype/storage";
 import { readFile } from "node:fs/promises";
+// Product analytics is the one deliberate, configuration-gated external dependency
+// (FEATURES.md SYS-14); it is absent entirely when no PostHog key is configured.
+// Every other remote call must stay absent, which is what these checks protect:
+// no remote fonts, map tiles, geocoding or company logos.
+function isAnalyticsRequest(url: string): boolean {
+  try {
+    return new URL(url).hostname.endsWith(".posthog.com");
+  } catch {
+    return false;
+  }
+}
+
 async function choose(page: Page, name: string) {
   await page.goto("/#/auth/sign-in");
   await page.getByRole("button", { name: `Wejdź jako ${name}`, exact: true }).click();
@@ -28,7 +40,8 @@ for (const [name, filename] of [
   }) => {
     const external: string[] = [];
     page.on("request", (request) => {
-      if (!request.url().startsWith("http://127.0.0.1:3106")) external.push(request.url());
+      if (!request.url().startsWith("http://127.0.0.1:3106") && !isAnalyticsRequest(request.url()))
+        external.push(request.url());
     });
     await choose(page, name);
     await page.goto("/#/app/profil");
@@ -91,7 +104,8 @@ test("published job → saved offer/draft → submitted application → employer
     if (
       !r.url().startsWith("http://127.0.0.1:3106") &&
       !r.url().startsWith("data:") &&
-      !r.url().startsWith("blob:")
+      !r.url().startsWith("blob:") &&
+      !isAnalyticsRequest(r.url())
     )
       external.push(r.url());
   });
@@ -276,12 +290,12 @@ test("storage denial keeps the app usable and offers export", async ({ page }) =
   await page.goto("/#/app/profil");
   await expect(page.getByLabel("Imię i nazwisko")).toHaveValue("Anna Kowalska");
 });
-test("map, hash deep links and unknown records work without external requests", async ({
+test("map, hash deep links and unknown records work without unexpected external requests", async ({
   page,
 }) => {
   const external: string[] = [];
   page.on("request", (r) => {
-    if (r.url().startsWith("https://")) external.push(r.url());
+    if (r.url().startsWith("https://") && !isAnalyticsRequest(r.url())) external.push(r.url());
   });
   await page.goto("/#/oferty?view=map");
   await page

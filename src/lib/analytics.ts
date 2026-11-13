@@ -14,7 +14,7 @@
 import posthog from "posthog-js";
 
 const projectKey = import.meta.env.VITE_PUBLIC_POSTHOG_KEY?.trim() ?? "";
-const apiHost = import.meta.env.VITE_PUBLIC_POSTHOG_HOST?.trim() || "https://eu.i.posthog.com";
+const apiHost = import.meta.env.VITE_PUBLIC_POSTHOG_HOST?.trim() || "https://us.i.posthog.com";
 
 let active = false;
 

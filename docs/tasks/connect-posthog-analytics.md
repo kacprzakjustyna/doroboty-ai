@@ -16,8 +16,8 @@ route: collection is client-side only, keyed by a public project key read from t
 - `posthog-js` is a runtime dependency and the project builds, lints and type-checks with it.
 - Analytics initialise only when `VITE_PUBLIC_POSTHOG_KEY` is set. With no key the app runs
   unchanged, sends nothing and logs a single development notice; no crash and no network call.
-- The ingestion host defaults to PostHog Cloud EU and is overridable with
-  `VITE_PUBLIC_POSTHOG_HOST`.
+- The ingestion host defaults to PostHog Cloud US, verified to be the region that accepts
+  this project's key, and is overridable with `VITE_PUBLIC_POSTHOG_HOST`.
 - Autocapture is on. Session replay and surveys are off. Person profiles stay `identified_only`
   and the prototype never calls `identify`, so events remain anonymous.
 - `$pageview` is captured manually on every hash-route change, because automatic
@@ -77,6 +77,37 @@ route: collection is client-side only, keyed by a public project key read from t
   real key in PostHog's Activity view.
 - Not included: manual `job_viewed` / `apply_clicked` / `filter_used` instrumentation. The typed
   `trackEvent` helper is in place for it; autocapture covers the interactions meanwhile.
+
+## Follow-up: region correction and deployment
+
+- The default ingestion host was EU, taken from the course source material for the public
+  production portal. Probing both regions with the project's real key showed EU returns HTTP 401
+  (`authentication_failed`) and US returns HTTP 200, so this project lives on PostHog Cloud US.
+  The default in `src/lib/analytics.ts` was changed to US accordingly; `.env.example` no longer
+  pins a host.
+- Project settings were read from `/decide/?v=3` with that key: `autocapture_opt_out` is `false`,
+  so autocapture is enabled on the PostHog side as well as in code. Session recording is enabled
+  in the project but stays disabled by the client config, as intended.
+- Ingestion was confirmed end to end. A direct capture call returned `{"status":"Ok"}` and the
+  event appeared in the project's Activity view. The app itself, driven in a real browser engine
+  against the running dev server, produced `$pageview` and `$autocapture` (including
+  `clicked link with text "Metodologia"`) that also appeared there, which closes the gap left by
+  the earlier verification.
+- The Netlify project `dynamic-kleicha-52254b` builds from `main`, so the published site predates
+  this work and carries no analytics until this branch reaches `main`.
+
+- Enabling the key broke four end-to-end checks that assert `external === []`: the two persona
+  PDF checks, the full recruitment journey and the map/deep-link check. The assertion encoded a
+  real product property (no remote fonts, tiles, geocoding or logos) that configured analytics
+  deliberately changes. Rather than drop the checks, a shared `isAnalyticsRequest` helper now
+  excludes `*.posthog.com` only, so every other remote call still fails them; the map test's
+  title says "unexpected external requests" accordingly, and PUB-05 is scoped to match. The gate
+  was then re-run with analytics active, so these journeys now execute against the real shipping
+  configuration rather than an analytics-free build.
+- Netlify project `dynamic-kleicha-52254b` (account DoRobotyAI) was given the build variables
+  `VITE_PUBLIC_POSTHOG_KEY` and `SECRETS_SCAN_OMIT_KEYS=VITE_PUBLIC_POSTHOG_KEY`; the latter stops
+  Netlify's secrets scanner failing the build over a key Vite is meant to inline. Scoped variables
+  were rejected by the account plan, so both are set for all scopes and contexts.
 
 ## Separate review
 
