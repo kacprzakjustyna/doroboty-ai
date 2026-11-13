@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { initialState, transition, type Action, type State } from "./model";
-import { parseState, readState, saveState, type StoragePort } from "./storage";
+import { STORAGE_KEY, parseState, readState, saveState, type StoragePort } from "./storage";
 function browserStorage(): StoragePort | null {
   try {
     return window.localStorage;
@@ -53,6 +53,25 @@ function useStore() {
   }
   useEffect(() => {
     document.documentElement.classList.remove("dark");
+  }, []);
+  useEffect(() => {
+    // Another tab saved the scenario: adopt its newer valid state so this tab's
+    // next save does not silently overwrite those changes.
+    function onStorage(event: StorageEvent) {
+      if (event.key !== STORAGE_KEY || event.newValue === null) return;
+      let next: State;
+      try {
+        next = parseState(event.newValue);
+      } catch {
+        return;
+      }
+      latest.current = next;
+      setState(next);
+      setBlocked(false);
+      setIssue("Dane zmieniły się w innej karcie. Ta karta pokazuje teraz najnowszą wersję.");
+    }
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
   }, []);
   return {
     state,
