@@ -1,0 +1,1160 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>A/B test</title>
+<style>:root {
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:#202830;
+  background:#f5f6f8;
+  font-synthesis:none;
+  --ink:#202830;
+  --muted:#626e7b;
+  --line:#e4e7ec;
+  --purple:#5c4be2;
+  --purple-soft:#f1efff;
+  --amber:#985b06;
+  --amber-soft:#fff6e7;
+  --green:#167152;
+  --green-soft:#eaf8f1;
+}
+* {
+  box-sizing:border-box;
+}
+body {
+  margin:0;
+}
+main {
+  max-width:1280px;
+  margin:auto;
+  padding:0 36px 36px;
+}
+button,input,select {
+  font:inherit;
+}
+button {
+  cursor:pointer;
+  border:1px solid #d5dbe3;
+  background:white;
+  border-radius:7px;
+  padding:9px 12px;
+  font-size:12px;
+  color:var(--ink);
+  font-weight:600;
+}
+button:hover {
+  background:#f3f2fb;
+}
+button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible {
+  outline:3px solid #b4aaff;
+  outline-offset:2px;
+}
+button:disabled {
+  opacity:.5;
+  cursor:default;
+}
+.topbar {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid var(--line);
+  padding:22px 0;
+  margin-bottom:32px;
+}
+.brand {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:13px;
+  font-weight:650;
+}
+.brandmark {
+  display:inline-grid;
+  place-items:center;
+  width:36px;
+  height:30px;
+  background:var(--ink);
+  color:white;
+  border-radius:7px;
+  font-size:12px;
+  letter-spacing:-.5px;
+}
+.pagehead {
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:20px;
+  margin:30px 0 26px;
+}
+h1 {
+  font-size:32px;
+  letter-spacing:-1.1px;
+  line-height:1.15;
+  margin:9px 0 0;
+  max-width:780px;
+}
+h2 {
+  font-size:16px;
+  letter-spacing:-.25px;
+  margin:0;
+}
+h3 {
+  font-size:13px;
+  margin:0 0 8px;
+}
+.eyebrow {
+  text-transform:uppercase;
+  letter-spacing:1.6px;
+  font-size:10px;
+  font-weight:750;
+  color:var(--muted);
+  line-height:1.6;
+}
+.badge {
+  border:1px solid #efdbb7;
+  background:var(--amber-soft);
+  color:var(--amber);
+  font-size:11px;
+  font-weight:700;
+  padding:8px 11px;
+  border-radius:30px;
+  flex-shrink:0;
+  margin-top:8px;
+}
+.badge.good {
+  color:var(--green);
+  background:var(--green-soft);
+  border-color:#bce1d0;
+}
+.layout {
+  display:grid;
+  grid-template-columns:minmax(0,1.13fr) minmax(0,1fr);
+  gap:24px;
+  align-items:start;
+}
+.brief,aside {
+  display:grid;
+  gap:18px;
+  min-width:0;
+}
+.panel {
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:24px;
+  box-shadow:0 2px 3px #20283002;
+}
+.section-label {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:17px;
+}
+.step {
+  font-size:10px;
+  font-weight:700;
+  color:#7b8494;
+  border:1px solid var(--line);
+  border-radius:5px;
+  padding:5px;
+}
+p {
+  font-size:13px;
+  line-height:1.65;
+  margin:9px 0 0;
+  overflow-wrap:anywhere;
+}
+.hypothesis>p {
+  font-size:16px;
+  line-height:1.6;
+  letter-spacing:-.1px;
+}
+.variants {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:24px;
+}
+.variants article {
+  position:relative;
+  border:1px solid var(--line);
+  background:#fbfcfd;
+  border-radius:8px;
+  padding:16px;
+}
+.variants .variant-b {
+  border-color:#dcd6ff;
+  background:#faf9ff;
+}
+.variant {
+  display:grid;
+  place-items:center;
+  width:25px;
+  height:25px;
+  font-size:11px;
+  font-weight:700;
+  border-radius:6px;
+  border:1px solid #dce0e7;
+  background:white;
+  margin-bottom:12px;
+}
+.variant-b .variant {
+  color:var(--purple);
+  border-color:#d8d1ff;
+}
+.variants p {
+  font-size:12px;
+  min-height:54px;
+}
+.variants small {
+  display:block;
+  margin-top:18px;
+  font-size:11px;
+  color:var(--muted);
+}
+.plan-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+  border-top:1px solid var(--line);
+  padding-top:16px;
+  margin-top:18px;
+}
+.plan-grid small,.metric-flow small,.stats-grid small,.mde small {
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.45;
+}
+.plan-grid strong {
+  font-size:14px;
+  display:block;
+  margin-top:5px;
+  font-weight:650;
+}
+.metric-flow {
+  display:flex;
+  align-items:center;
+  gap:18px;
+  margin:21px 0 8px;
+  flex-wrap:wrap;
+}
+.metric-flow strong {
+  font-size:27px;
+  display:block;
+  margin-top:5px;
+  letter-spacing:-.8px;
+}
+.arrow {
+  color:#9ba4af;
+  font-size:20px;
+}
+.chip {
+  font-size:10px;
+  font-weight:650;
+  line-height:1.6;
+  padding:4px 8px;
+  background:var(--purple-soft);
+  color:var(--purple);
+  border-radius:5px;
+  display:inline-block;
+}
+.source {
+  color:var(--muted);
+  font-size:11px;
+}
+.guardrail {
+  border-bottom:1px solid var(--line);
+  padding:0 0 15px;
+  margin:0 0 15px;
+}
+.guardrail:last-of-type {
+  border-bottom:none;
+  padding:0;
+  margin:0;
+}
+.guardrail h3:before {
+  content:"";
+  width:6px;
+  height:6px;
+  display:inline-block;
+  background:var(--purple);
+  border-radius:50%;
+  margin-right:8px;
+}
+.guardrail p {
+  font-size:12px;
+}
+.guardrail .limit {
+  font-size:11px;
+  color:var(--amber);
+  border-left:2px solid #e4ba76;
+  padding-left:10px;
+}
+.decision {
+  border-left:1px solid var(--line);
+}
+.decision>p:first-of-type {
+  font-size:14px;
+  font-weight:550;
+}
+.decision h3 {
+  margin-top:20px;
+}
+ul {
+  padding-left:18px;
+}
+li {
+  font-size:12px;
+  line-height:1.6;
+  margin:7px 0;
+}
+.decision ul {
+  color:var(--amber);
+}
+.calc-heading {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+.calc-heading h2 {
+  margin-top:4px;
+  font-size:20px;
+}
+.muted {
+  color:var(--muted);
+  font-size:12px;
+}
+.tiny {
+  font-size:10px;
+  line-height:1.65;
+  color:var(--muted);
+}
+fieldset {
+  border:0;
+  padding:0;
+  margin:0;
+  min-width:0;
+}
+fieldset:disabled {
+  opacity:.5;
+}
+.control {
+  margin-top:22px;
+}
+.control-head {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:8px;
+}
+.control-head label {
+  font-size:12px;
+  font-weight:550;
+}
+.input-unit {
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.input-unit input {
+  width:80px;
+  padding:6px 7px;
+  border:1px solid #dce0e7;
+  border-radius:5px;
+  text-align:right;
+  font-size:12px;
+  font-weight:650;
+  background:#fff;
+  color:var(--ink);
+}
+.input-unit span {
+  font-size:10px;
+  color:var(--muted);
+  min-width:14px;
+}
+input[type=range] {
+  width:100%;
+  accent-color:var(--purple);
+  height:16px;
+  cursor:pointer;
+  margin:0;
+}
+input[type=checkbox] {
+  accent-color:var(--purple);
+}
+select {
+  font-size:11px;
+  padding:6px;
+  border:1px solid #dce0e7;
+  border-radius:5px;
+  background:#fff;
+  color:var(--ink);
+  max-width:60%;
+}
+.scenario-target {
+  margin:20px 0 14px;
+  padding:12px;
+  border:1px dashed #d8d1ff;
+  border-radius:7px;
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  font-size:11px;
+  color:var(--muted);
+}
+.scenario-target strong {
+  color:var(--purple);
+  font-size:13px;
+}
+.verdict {
+  border-radius:7px;
+  padding:13px;
+  background:#fafbfc;
+  color:var(--ink);
+  border:1px solid var(--line);
+  font-size:12px;
+  line-height:1.65;
+  margin-bottom:20px;
+}
+.verdict.good {
+  background:#f5fbf8;
+  color:var(--ink);
+  border-color:#cae7da;
+}
+.power-label {
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
+  margin-bottom:10px;
+}
+.power-label strong {
+  font-size:20px;
+  letter-spacing:-.5px;
+}
+.power-track {
+  height:7px;
+  background:#eeedf6;
+  border-radius:5px;
+  position:relative;
+  overflow:visible;
+}
+.power-track i {
+  display:block;
+  height:7px;
+  background:var(--purple);
+  border-radius:5px;
+  width:0;
+  transition:width .2s;
+}
+.power-track b {
+  position:absolute;
+  left:80%;
+  height:13px;
+  top:-3px;
+  border-left:2px solid #343b46;
+}
+.stats-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:22px 14px;
+  margin:24px 0;
+}
+.stats-grid strong {
+  display:block;
+  margin-top:5px;
+  font-size:21px;
+  font-weight:650;
+  letter-spacing:-.5px;
+}
+.mde {
+  border-top:1px solid var(--line);
+  padding-top:16px;
+}
+.mde strong {
+  display:block;
+  font-size:15px;
+  margin-top:6px;
+  color:var(--purple);
+}
+.actions {
+  display:flex;
+  gap:8px;
+  margin:20px 0 12px;
+  flex-wrap:wrap;
+}
+.banner {
+  background:var(--amber-soft);
+  border:1px solid #efd7b1;
+  color:var(--amber);
+  padding:13px 17px;
+  font-size:12px;
+  line-height:1.6;
+  border-radius:7px;
+  margin:12px 0;
+}
+.results h2 {
+  margin:5px 0 0;
+}
+.result-table {
+  display:grid;
+  grid-template-columns:44px 1fr 1fr;
+  gap:9px;
+  align-items:center;
+  margin:20px 0;
+}
+.result-table>span {
+  font-size:10px;
+  color:var(--muted);
+}
+.result-table>b {
+  font-size:12px;
+}
+.result-table>input {
+  width:100%;
+  min-width:0;
+  font-size:12px;
+  padding:9px;
+  border:1px solid #dce0e7;
+  border-radius:5px;
+}
+.check {
+  display:flex;
+  gap:8px;
+  align-items:flex-start;
+  font-size:11px;
+  line-height:1.6;
+  margin:12px 0;
+}
+.check input {
+  flex-shrink:0;
+  margin-top:3px;
+}
+.result-metrics {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+  margin-top:18px;
+  border-top:1px solid var(--line);
+  padding-top:16px;
+}
+.result-metrics small {
+  display:block;
+  font-size:10px;
+  color:var(--muted);
+}
+.result-metrics strong {
+  display:block;
+  font-size:16px;
+  margin-top:5px;
+}
+.results .verdict {
+  margin:15px 0 0;
+}
+footer {
+  display:flex;
+  justify-content:space-between;
+  gap:25px;
+  border-top:1px solid var(--line);
+  padding-top:20px;
+  margin-top:32px;
+  font-size:10px;
+  line-height:1.6;
+  color:var(--muted);
+}
+footer details {
+  max-width:480px;
+}
+summary {
+  cursor:pointer;
+}
+footer a {
+  color:var(--purple);
+  text-decoration:none;
+}
+footer p {
+  font-size:10px;
+}
+.sr-only {
+  position:absolute;
+  width:1px;
+  height:1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  white-space:nowrap;
+}
+[hidden] {
+  display:none!important;
+}
+.decision-heading {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:14px;
+}
+.decision-heading .eyebrow {
+  max-width:230px;
+}
+.decision .badge,.verdict .badge {
+  margin:0;
+}
+.badge.caution {
+  color:var(--amber);
+  background:#fff0c7;
+  border-color:#ead18d;
+}
+.badge.danger {
+  color:#ab3037;
+  background:#ffeaec;
+  border-color:#efc0c5;
+}
+.verdict.danger {
+  background:#fff8f8;
+  border-color:#edced2;
+}
+.verdict.caution {
+  background:#fffcf4;
+  border-color:#ebdfbb;
+}
+.verdict>p {
+  font-size:12px;
+  margin-top:9px;
+}
+.effect-unit {
+  max-width:none;
+  width:58px;
+  padding:6px 5px;
+  font-size:12px;
+  font-weight:650;
+  flex-shrink:0;
+}
+@media(min-width:1100px) {
+  aside {
+    position:relative;
+  }
+  .calculator {
+    padding:25px 27px;
+  }
+}
+@media(max-width:800px) {
+  main {
+    padding:0 18px 25px;
+  }
+  .layout {
+    grid-template-columns:1fr;
+  }
+  .pagehead {
+    display:block;
+  }
+  h1 {
+    font-size:28px;
+  }
+  .badge {
+    display:inline-block;
+    margin-top:16px;
+  }
+  .topbar {
+    margin-bottom:20px;
+  }
+  .panel {
+    padding:20px;
+  }
+  footer {
+    display:block;
+  }
+  footer details {
+    margin-top:12px;
+  }
+  .calc-heading h2 {
+    font-size:19px;
+  }
+}
+@media(max-width:380px) {
+  .variants {
+    grid-template-columns:1fr;
+  }
+  .variants p {
+    min-height:0;
+  }
+  .calc-heading {
+    align-items:flex-start;
+  }
+  .calc-heading>.chip {
+    font-size:9px;
+  }
+  .input-unit input {
+    width:76px;
+  }
+  .stats-grid strong {
+    font-size:19px;
+  }
+}
+@media(max-width:420px) {
+  .decision-heading {
+    align-items:flex-start;
+    flex-direction:column;
+  }
+  .control-head {
+    gap:8px;
+  }
+  .control-head label {
+    max-width:160px;
+  }
+  .input-unit {
+    gap:5px;
+  }
+  .input-unit input {
+    width:64px;
+  }
+  .effect-unit {
+    width:52px;
+  }
+}
+@media print {
+  body {
+    background:white;
+  }
+  main {
+    padding:0;
+  }
+  .layout {
+    grid-template-columns:1.1fr 1fr;
+    gap:14px;
+  }
+  .panel {
+    break-inside:avoid;
+    box-shadow:none;
+    padding:16px;
+  }
+  button,input[type=range],.actions,.results {
+    display:none;
+  }
+  .topbar {
+    padding-top:0;
+    margin-bottom:16px;
+  }
+  h1 {
+    font-size:26px;
+  }
+  .panel p {
+    font-size:11px;
+  }
+  .control {
+    margin-top:12px;
+  }
+  footer {
+    margin-top:18px;
+  }
+  * {
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+  }
+}
+</style>
+</head>
+<body>
+<main>
+  <header class="topbar"><span class="brand"><span class="brandmark">A/B</span> <span data-i18n="workspace"></span></span><button id="print" data-i18n="print"></button></header>
+  <div id="demo" class="banner" hidden data-i18n="demo"></div>
+  <div class="pagehead"><div><div class="eyebrow" data-i18n="savedPlan"></div><h1 id="title"></h1></div></div>
+  <div class="layout">
+    <div class="brief">
+      <section class="panel hypothesis"><div class="section-label"><span class="step">01</span><h2 data-i18n="hypothesis"></h2></div><p id="hypothesis"></p>
+        <div class="variants"><article><span class="variant">A</span><h3 data-i18n="control"></h3><p id="control"></p><small>50%</small></article><article class="variant-b"><span class="variant">B</span><h3 data-i18n="treatment"></h3><p id="treatment"></p><small>50%</small></article></div>
+      </section>
+      <section class="panel"><div class="section-label"><span class="step">02</span><h2 data-i18n="population"></h2></div><p id="population"></p><div class="plan-grid"><div><small data-i18n="weekly"></small><strong id="saved-traffic"></strong></div><div><small data-i18n="allocation"></small><strong>50 / 50</strong></div></div></section>
+      <section class="panel"><div class="section-label"><span class="step">03</span><h2 data-i18n="primary"></h2></div><h3 id="metric"></h3><p id="metric_definition"></p><div class="metric-flow"><div><small data-i18n="baseline"></small><strong id="saved-baseline"></strong></div><span class="arrow">→</span><div><small data-i18n="target"></small><strong id="saved-target"></strong></div><span id="saved-effect" class="chip"></span></div><p class="source" id="baseline_source"></p><div class="plan-grid"><div><small data-i18n="recruitment"></small><strong id="saved-duration"></strong></div><div><small data-i18n="readout"></small><strong id="saved-readout"></strong></div></div></section>
+      <section class="panel"><div class="section-label"><span class="step">04</span><h2 data-i18n="guardrails"></h2></div><div id="guardrails"></div><p class="source" data-i18n="safetyNote"></p></section>
+    </div>
+    <aside>
+      <section class="panel decision"><div class="decision-heading"><div class="eyebrow" data-i18n="recommendation"></div><span id="status" class="badge"></span></div><p id="recommendation"></p><ul id="blockers"></ul><h3 data-i18n="decisionRule"></h3><p id="decision_rule"></p></section>
+      <section class="panel calculator"><div class="calc-heading"><div><div class="eyebrow" data-i18n="before"></div><h2 data-i18n="calculator"></h2></div><span class="chip">α 0.05 · 80%</span></div><p class="muted" data-i18n="scenarioNote"></p>
+        <div id="unsupported" class="banner" hidden data-i18n="unsupported"></div>
+        <fieldset id="scenario-fields"><legend class="sr-only" data-i18n="calculator"></legend><div id="controls"></div><select id="effect-type" class="effect-unit" aria-label="Effect unit"><option value="relative">%</option><option value="pp">pp</option></select></fieldset>
+        <div class="scenario-target"><span data-i18n="scenarioTarget"></span><strong id="scenario-target"></strong></div>
+        <div id="calc-verdict" class="verdict" role="status" aria-live="polite"><span id="scenario-status" class="badge"></span><p id="scenario-verdict"></p></div>
+        <div class="power-label"><span data-i18n="power"></span><strong id="power"></strong></div><div class="power-track" aria-hidden="true"><i id="power-fill"></i><b></b></div><p class="tiny" data-i18n="powerExplain"></p>
+        <div class="stats-grid"><div><small data-i18n="available"></small><strong id="available"></strong></div><div><small data-i18n="needed"></small><strong id="needed"></strong></div><div><small data-i18n="neededDays"></small><strong id="needed-days"></strong></div><div><small data-i18n="scenarioReadout"></small><strong id="scenario-readout"></strong></div></div>
+        <div class="mde"><small data-i18n="mde"></small><strong id="mde"></strong></div><p class="tiny" id="sizing-note"></p><div class="actions"><button id="reset" data-i18n="reset"></button><button id="export" data-i18n="export"></button></div><p class="tiny" data-i18n="defaults"></p>
+      </section>
+      <section class="panel results"><div class="eyebrow" data-i18n="after"></div><h2 data-i18n="results"></h2><p class="muted" data-i18n="observedNote"></p><fieldset id="result-fields"><legend class="sr-only" data-i18n="observedCounts"></legend><div class="result-table"><span data-i18n="variant"></span><span data-i18n="assigned"></span><span data-i18n="successes"></span><b>A</b><input id="nA" type="number" min="1" step="1" aria-label="A: N"><input id="xA" type="number" min="0" step="1" aria-label="A: X"><b>B</b><input id="nB" type="number" min="1" step="1" aria-label="B: N"><input id="xB" type="number" min="0" step="1" aria-label="B: X"></div><label class="check"><input id="complete" type="checkbox"><span data-i18n="complete"></span></label><label class="check"><input id="quality" type="checkbox"><span data-i18n="quality"></span></label></fieldset><div id="result-output" role="status" aria-live="polite"></div></section>
+    </aside>
+  </div>
+  <footer><span data-i18n="footer"></span><details><summary data-i18n="method"></summary><p data-i18n="methodText"></p><a href="https://www.statsmodels.org/stable/generated/statsmodels.stats.proportion.power_proportions_2indep.html">statsmodels · power</a> · <a href="https://www.statsmodels.org/stable/generated/statsmodels.stats.proportion.proportions_ztest.html">statsmodels · z-test</a></details></footer>
+</main>
+<script type="application/json" id="card-data">{"language": "pl", "illustrative": false, "title": "Karta zakresu w widoku rekrutera (I2)", "hypothesis": "Jeśli rekruter zobaczy na górze aplikacji kartę zakresu — cztery stałe pola (Moja część / Co robił zespół / Efekt / Jak to sprawdzono) wypełnione słowami kandydata — to rzadziej odłoży aplikację jako „wstrzymaną”, ponieważ będzie w stanie stwierdzić, co kandydat zrobił sam, i nie będzie musiał odkładać decyzji. Cel ustawiony na próg działania: spadek o 15% względnych (z 17,0% do 14,4%). Realistycznie spodziewamy się mniej, dlatego test jest zaprojektowany na najmniejszą zmianę, która uzasadniałaby wdrożenie, a nie na nadzieję.", "control": "Wariant A: obecny widok aplikacji u rekrutera — odpowiedź kandydata, CV, Match Score, historia procesu. Bez karty.", "treatment": "Wariant B: ten sam widok plus karta zakresu na górze zakładki „Odpowiedź”: cztery stałe pola w słowach kandydata, licznik wypełnionych pól (N/4) i nota o ograniczeniach metody. Pole, którego kandydat nie opisał, zostaje puste.", "population": "Wszystkie aplikacje złożone na opublikowane ogłoszenia w DoRoboty. Wariant przypisywany losowo w momencie złożenia aplikacji, zanim rekruter ją otworzy. Wykluczenia (konta testowe, ogłoszenia wewnętrzne) ustalone przed startem. Uwaga: ten sam rekruter widzi aplikacje z obu wariantów.", "metric": "Odsetek aplikacji odłożonych jako „wstrzymane”", "metric_definition": "Aplikacje z decyzją przesiewową „wstrzymane” w ciągu 25 dni / wszystkie aplikacje przypisane do wariantu. Mianownik obejmuje także aplikacje bez żadnej decyzji, więc karta nie może poprawić wyniku przez samo spowolnienie rekrutera. Kierunek pożądany: w dół.", "baseline_source": "Dane discovery DoRoboty, applications.csv, 45 000 aplikacji z okresu 2025-11-07 – 2026-06-30: 7 641 aplikacji ze statusem „wstrzymane” = 17,0%. Okno 25 dni pokrywa 99% decyzji przesiewowych w tych danych (mediana 2 dni, p99 24 dni). Tempo napływu: 1 340 aplikacji tygodniowo.", "baseline": 0.1698, "effect": 15, "effect_type": "relative", "direction": "down", "weekly_users": 1340, "recruitment_days": 35, "primary_window_days": 25, "guardrail_window_days": 35, "max_readout_days": 120, "calculator_supported": true, "guardrails": [{"name": "Kontynuacja po pierwszej rozmowie", "definition": "Aplikacje z decyzją „kontynuujemy” po pierwszej rozmowie w ciągu 35 dni / wszystkie aplikacje przypisane do wariantu. Dziś 3,6% (1 620 z 45 000). Okno 35 dni pokrywa wszystkie decyzje w danych (mediana 9 dni, maksimum 34).", "limit": "Jeśli w wariancie B wskaźnik spadnie istotnie statystycznie względem A po pełnym okresie obserwacji, wstrzymujemy wdrożenie i sprawdzamy, czy karta nie skłania do pochopnych decyzji. Brak wykrytego spadku nie dowodzi braku szkody."}, {"name": "Odsetek zaproszeń", "definition": "Aplikacje zakończone zaproszeniem w ciągu 25 dni / wszystkie aplikacje przypisane do wariantu. Dziś 14,7% (6 600 z 45 000).", "limit": "Jeśli w wariancie B odsetek zaproszeń spadnie istotnie statystycznie względem A, wstrzymujemy wdrożenie: mniej „wstrzymanych” nie może oznaczać, że karta po prostu zamyka kandydatom drogę do rozmowy."}], "blockers": ["Kontaminacja: ten sam rekruter przegląda aplikacje z obu wariantów i uczy się czytać kartę, więc zacznie szukać konkretów także w wariancie A. To zaniża różnicę. Wniosek praktyczny: wynik pozytywny jest wiarygodny, a brak różnicy jest niejednoznaczny. Alternatywa — losowanie po rekruterach — usuwa ten problem, ale wymaga 3–6 razy większej próby i innej metody obliczeniowej (dane klastrowe).", "Test wymaga prawdziwego ruchu DoRoboty i karty działającej na produkcji. Prototyp AIPH3 (localStorage, persony, dane syntetyczne) nie generuje ruchu i nie może tego testu wykonać — na kursie pozostaje symulacja.", "Karta zakresu po stronie kandydata nie istnieje. W teście treść karty musi powstawać automatycznie z odpowiedzi kandydata albo pochodzić z asystenta, którego trzeba najpierw zbudować. Bez tego nie ma czego pokazać rekruterowi w wariancie B.", "Rozbieżność definicji celu: dane purchases.csv dają 43,9% powtórnych zakupów w 90 dni (liczone na zakup, 2 376 zakupów z pełnym oknem), a dokumenty discovery mówią o 30%. Do uzgodnienia, zanim ktokolwiek połączy wynik tego testu z celem 30% → 60%."], "recommendation": "Warto uruchomić, świadomie i z zastrzeżeniem. Przy 1 340 aplikacjach tygodniowo wykrycie spadku „wstrzymanych” z 17,0% do 14,4% wymaga 5 tygodni zbierania danych (3 203 aplikacji na wariant, przy dostępnych 3 350) i czasu na dojrzenie decyzji — razem 70 dni do odczytu, bo najdłuższy bezpiecznik potrzebuje 35 dni. To jest wykonalne. Wybraliśmy tę metrykę nie dlatego, że jest najszybsza, lecz dlatego, że jest najbliższym obserwowalnym śladem diagnozy O01: aplikacja trafia do „wstrzymanych” dokładnie wtedy, gdy rekruter nie umie stwierdzić, co kandydat zrobił sam. Prawdziwy cel — powtórny zakup — mierzyć się tu nie da: przy 33 zakupach tygodniowo wykrycie wzrostu z 43,9% do 50% wymagałoby około 15 miesięcy zbierania danych plus 90 dni okna. Dlatego „wstrzymane” są zamiennikiem, a nie dowodem na przychód. Zastrzeżenie dotyczy kontaminacji opisanej w blokadach: ten układ zaniża efekt.", "decision_rule": "Po 35 dniach zbierania i pełnych 35 dniach obserwacji: wdrożenie rozważamy tylko wtedy, gdy „wstrzymane” spadły istotnie statystycznie w wariancie B i żaden z dwóch bezpieczników nie pogorszył się istotnie. Istotne pogorszenie bezpiecznika wstrzymuje wdrożenie i uruchamia analizę przyczyny. Brak istotnej różnicy w metryce głównej oznacza brak dowodu, a nie równoważność wariantów. Horyzont ustalamy przed startem i nie przedłużamy testu dlatego, że wynik jest „blisko” istotności. Sam wynik statystyczny nie upoważnia do wdrożenia — decyzję podejmuje człowiek, biorąc pod uwagę koszt utrzymania karty i to, że efekt na powtórny zakup pozostaje niezmierzony."}</script>
+<script>/* Normal approximation for two independent proportions with 50/50 allocation. */
+(function (root) {
+  'use strict';
+  const Z = 1.959963984540054, TARGET_POWER = 0.8;
+  function erfc(x) {
+    const z = Math.abs(x), t = 1 / (1 + z / 2);
+    const r = t * Math.exp(-z*z - 1.26551223 + t*(1.00002368 + t*(0.37409196 + t*(0.09678418 + t*(-0.18628806 + t*(0.27886807 + t*(-1.13520398 + t*(1.48851587 + t*(-0.82215223 + t*0.17087277)))))))));
+    return x >= 0 ? r : 2-r;
+  }
+  const cdf = x => 0.5 * erfc(-x / Math.SQRT2);
+  const validRate = p => Number.isFinite(p) && p > 0 && p < 1;
+  function power(p0, p1, n) {
+    if (!validRate(p0) || !validRate(p1) || !Number.isFinite(n) || n < 2) return null;
+    const q = (p0+p1)/2, v0 = 2*q*(1-q), v1 = p0*(1-p0)+p1*(1-p1);
+    const mu = Math.abs(p1-p0)*Math.sqrt(n), cut = Z*Math.sqrt(v0), sd = Math.sqrt(v1);
+    return Math.max(0, Math.min(1, cdf((mu-cut)/sd)+cdf((-mu-cut)/sd)));
+  }
+  function required(p0, p1) {
+    if (!validRate(p0) || !validRate(p1) || p0 === p1) return null;
+    let hi = 2;
+    while (power(p0,p1,hi) < TARGET_POWER && hi < 1e12) hi *= 2;
+    if (hi >= 1e12) return null;
+    let lo = 2;
+    while (lo < hi) {
+      const mid = Math.floor((lo+hi)/2);
+      if (power(p0,p1,mid) >= TARGET_POWER) hi=mid; else lo=mid+1;
+    }
+    return lo;
+  }
+  function mde(p0, n, direction) {
+    if (!validRate(p0) || !Number.isFinite(n) || n < 2) return null;
+    const sign = direction === 'down' ? -1 : 1;
+    let lo = 0, hi = (sign === 1 ? 1-p0 : p0)*(1-1e-10);
+    if (power(p0,p0+sign*hi,n) < TARGET_POWER) return null;
+    for (let i=0;i<70;i++) {
+      const mid = (lo+hi)/2;
+      if (power(p0,p0+sign*mid,n) >= TARGET_POWER) hi=mid; else lo=mid;
+    }
+    return hi;
+  }
+  function plan({baseline, effect, effect_type, direction, weekly_users, recruitment_days, primary_window_days, guardrail_window_days}) {
+    const sign = direction === 'down' ? -1 : 1;
+    if (!validRate(baseline) || !Number.isFinite(effect) || effect <= 0 ||
+        !Number.isFinite(weekly_users) || weekly_users <= 0 ||
+        !Number.isSafeInteger(recruitment_days) || recruitment_days < 1 ||
+        !Number.isFinite(primary_window_days) || primary_window_days < 0 ||
+        !Number.isFinite(guardrail_window_days) || guardrail_window_days < 0 ||
+        !['relative','pp'].includes(effect_type) || !['up','down'].includes(direction)) return {error:'inputs'};
+    if (recruitment_days < 14 || recruitment_days % 7 !== 0) return {error:'duration'};
+    const target = baseline + sign * (effect_type === 'pp' ? effect/100 : baseline*effect/100);
+    if (!validRate(target)) return {error:'target'};
+    const n = Math.floor(weekly_users*recruitment_days/14), need=required(baseline,target);
+    const followup = Math.max(primary_window_days,guardrail_window_days);
+    const days = need === null ? null : Math.max(14,7*Math.ceil((need*14/weekly_users)/7));
+    const sparse = Math.min(n*baseline,n*(1-baseline),n*target,n*(1-target)) < 10;
+    return {target,n,need,days,followup,readout:recruitment_days+followup,
+      required_readout:days === null ? null : days+followup,
+      power:power(baseline,target,n),mde:mde(baseline,n,direction),sparse};
+  }
+  function observed(nA,xA,nB,xB) {
+    if (![nA,xA,nB,xB].every(Number.isSafeInteger) || nA<1 || nB<1 || xA<0 || xB<0 || xA>nA || xB>nB) return {error:'counts'};
+    const srm = erfc(Math.abs(nA-nB)/Math.sqrt(2*(nA+nB)));
+    if (Math.min(xA,nA-xA,xB,nB-xB)<10) return {error:'sparse',srm};
+    const a=xA/nA,b=xB/nB,pool=(xA+xB)/(nA+nB),diff=b-a;
+    const se0=Math.sqrt(pool*(1-pool)*(1/nA+1/nB));
+    const se1=Math.sqrt(a*(1-a)/nA+b*(1-b)/nB);
+    return {a,b,diff,relative:diff/a,p:erfc(Math.abs(diff/se0)/Math.SQRT2),
+      low:Math.max(-1,diff-Z*se1),high:Math.min(1,diff+Z*se1),srm};
+  }
+  const api = {power,required,mde,plan,observed};
+  if (typeof module !== 'undefined' && module.exports) module.exports=api;
+  root.ABStats=api;
+})(globalThis);
+</script>
+<script>'use strict';
+const I18N = {
+  "en": {
+    "workspace": "Experiment card",
+    "print": "Print / PDF",
+    "savedPlan": "A/B test plan",
+    "demo": "EXAMPLE · All numbers are illustrative. This card does not describe a completed experiment.",
+    "hypothesis": "What we are testing",
+    "control": "Current experience",
+    "treatment": "Proposed change",
+    "population": "Who takes part",
+    "weekly": "Unique people / week",
+    "allocation": "Random A / B assignment",
+    "primary": "How we measure success",
+    "baseline": "Baseline",
+    "target": "Detection target",
+    "recruitment": "Recruitment",
+    "readout": "When we can read the result",
+    "guardrails": "What else we watch",
+    "safetyNote": "No significant drop means no deterioration was detected. A small drop can go unnoticed.",
+    "recommendation": "Is this test worth running?",
+    "decisionRule": "What happens after the test?",
+    "before": "Before launch",
+    "calculator": "Do we have enough people?",
+    "scenarioNote": "Change the numbers to explore sample size and duration. The saved plan stays unchanged.",
+    "unsupported": "This design requires a different calculation. The independent-proportions calculator is disabled.",
+    "effectUnit": "Effect unit",
+    "relative": "% relative",
+    "points": "percentage points",
+    "scenarioTarget": "Scenario: baseline → target",
+    "power": "Chance of detecting the assumed change",
+    "powerExplain": "Chance of detecting the assumed improvement if it is real. We aim for at least 80%.",
+    "available": "Available / variant",
+    "needed": "Required / variant",
+    "neededDays": "Required recruitment",
+    "scenarioReadout": "Full scenario readout",
+    "mde": "Minimum detectable change at this traffic and duration",
+    "reset": "Reset to plan",
+    "export": "Save scenario",
+    "defaults": "Two proportions · A/B 50/50 · two-sided test · α = 0.05 · target power 80% · normal approximation.",
+    "after": "After collecting data",
+    "results": "Results after data collection",
+    "observedNote": "Enter actual counts after the test ends. Every participant needs their full outcome window.",
+    "observedCounts": "Assignments and outcomes",
+    "variant": "Variant",
+    "assigned": "Assigned people",
+    "successes": "Metric events",
+    "complete": "The test and every participant's outcome window are complete.",
+    "quality": "A/B assignment and data collection have been checked.",
+    "footer": "A plan, not a result. Always evaluate guardrails alongside the primary metric.",
+    "method": "Method and sources",
+    "methodText": "Power: pooled null variance and unpooled alternative variance. Results: two-sided two-proportion z-test and approximate 95% Wald interval for the difference. Assignment check: chi-square with diagnostic threshold 0.001. Requires independent observations; does not cover continuous metrics, clusters or repeated peeking.",
+    "draft": "Needs refinement",
+    "revise": "Revise the plan",
+    "ready": "Worth running",
+    "noGuardrail": "Guardrail definitions are missing.",
+    "days": "days",
+    "users": "people",
+    "effectLabel": "Change to detect",
+    "durationLabel": "Recruitment days",
+    "empty": "Enter the missing numbers to assess feasibility. No assumptions are filled in for you.",
+    "badTarget": "The target must be strictly between 0% and 100%. Change the effect magnitude or unit.",
+    "sparsePlan": "Too few expected events for a reliable normal approximation. A rare-event assessment is needed.",
+    "adequate": "These numbers should provide enough people to detect the assumed change.",
+    "underpowered": "This scenario is underpowered. Recruit for longer or consider a change that could credibly produce a larger effect. If neither makes sense, skip this A/B test.",
+    "deadline": "Full readout falls after the decision deadline.",
+    "longer": "At the assumed effect, full readout needs approximately",
+    "unreachable": "Even an extreme change cannot reach 80% power with this sample.",
+    "sizingNote": "Recruit for at least 14 days, then in full weeks. Add the last participants' outcome windows. Check holidays and promotions before starting.",
+    "emptyResults": "Waiting for actual data. Planned sample sizes and forecasts are not experiment results.",
+    "invalidCounts": "Enter non-negative integer event counts no greater than assignments. Each variant needs at least one person.",
+    "sparseResults": "Too few events or non-events in at least one variant. The approximate z-test is unreliable; use another method.",
+    "srm": "Assignment differs from 50/50 (SRM p < 0.001). Pause interpretation and investigate.",
+    "provisional": "Calculation preview. Final interpretation requires the planned horizon, mature outcomes and verified data. Do not stop at the first significant reading.",
+    "significant": "The difference between A and B is statistically significant. Check the business target and the other important metrics before deciding.",
+    "notSignificant": "These data do not resolve whether the variants differ.",
+    "notEnoughActual": "Fewer people were recruited than the saved plan requires. Check the agreed stopping rule before interpreting.",
+    "absolute": "Difference B − A",
+    "ci": "95% interval for difference",
+    "pvalue": "p-value (two-sided)",
+    "rates": "A / B rates",
+    "scenarioExport": "Scenario for discussion; plan text needs review.",
+    "durationRule": "Recruit for at least 14 days, then in full weeks: 21, 28, 35 days, etc.",
+    "noRun": "Do not run now",
+    "scenarioReady": "Enough traffic"
+  },
+  "pl": {
+    "workspace": "Karta eksperymentu",
+    "print": "Drukuj / PDF",
+    "savedPlan": "Plan testu A/B",
+    "demo": "PRZYKŁAD · Wszystkie liczby są ilustracyjne. Ta karta nie opisuje przeprowadzonego testu.",
+    "hypothesis": "Co sprawdzamy",
+    "control": "Wersja obecna",
+    "treatment": "Proponowana zmiana",
+    "population": "Kto bierze udział",
+    "weekly": "Unikalne osoby / tydzień",
+    "allocation": "Losowy przydział A / B",
+    "primary": "Po czym poznamy sukces",
+    "baseline": "Wartość bazowa",
+    "target": "Cel do wykrycia",
+    "recruitment": "Zbieranie próby",
+    "readout": "Kiedy poznamy wynik",
+    "guardrails": "Na co jeszcze patrzymy",
+    "safetyNote": "Brak istotnego spadku oznacza, że nie wykryliśmy pogorszenia. Mały spadek może pozostać niezauważony.",
+    "recommendation": "Czy warto zrobić ten test?",
+    "decisionRule": "Co zrobimy po teście?",
+    "before": "Przed uruchomieniem",
+    "calculator": "Czy wystarczy nam osób?",
+    "scenarioNote": "Zmień liczby i sprawdź, jak wpływają na potrzebną próbę i czas. Zapisany plan pozostaje bez zmian.",
+    "unsupported": "Ten projekt wymaga innej metody obliczeń. Kalkulator dwóch niezależnych odsetków jest wyłączony.",
+    "effectUnit": "Jednostka zmiany",
+    "relative": "% względnie",
+    "points": "punkty procentowe",
+    "scenarioTarget": "Scenariusz: wartość bazowa → cel",
+    "power": "Szansa wykrycia założonej zmiany",
+    "powerExplain": "Szansa wykrycia założonej poprawy, jeśli rzeczywiście wystąpi. Celujemy w co najmniej 80%.",
+    "available": "Dostępne / wariant",
+    "needed": "Potrzebne / wariant",
+    "neededDays": "Potrzebne zbieranie próby",
+    "scenarioReadout": "Pełny odczyt scenariusza",
+    "mde": "Najmniejsza wykrywalna zmiana przy tym ruchu i czasie",
+    "reset": "Wróć do planu",
+    "export": "Zapisz scenariusz",
+    "defaults": "Dwa odsetki · A/B 50/50 · test dwustronny · α = 0,05 · moc docelowa 80% · przybliżenie normalne.",
+    "after": "Po zebraniu danych",
+    "results": "Wynik po zebraniu danych",
+    "observedNote": "Wpisz rzeczywiste liczby po zakończeniu testu. Każda osoba musi mieć pełny czas na wykonanie mierzonej czynności.",
+    "observedCounts": "Liczebności i konwersje",
+    "variant": "Wariant",
+    "assigned": "Przypisane osoby",
+    "successes": "Zdarzenie metryki",
+    "complete": "Test i czas na zebranie wyników wszystkich osób już się zakończyły.",
+    "quality": "Sprawdzono, że przydział A/B i zbieranie danych działają poprawnie.",
+    "footer": "Plan, nie wynik. Zmiana metryki głównej zawsze wymaga oceny zabezpieczeń.",
+    "method": "Metoda i źródła",
+    "methodText": "Moc: wariancja łączona pod hipotezą zerową, osobne wariancje pod alternatywą. Wynik: dwustronny test z dla dwóch odsetków i przybliżony 95% przedział Walda dla różnicy. Kontrola przydziału: chi-kwadrat, próg diagnostyczny 0,001. Metoda wymaga niezależnych obserwacji; nie obejmuje metryk ciągłych, klastrów ani korekty za wielokrotne podglądanie.",
+    "draft": "Do dopracowania",
+    "revise": "Zmień plan",
+    "ready": "Test ma sens",
+    "noGuardrail": "Brakuje definicji zabezpieczeń.",
+    "days": "dni",
+    "users": "osób",
+    "effectLabel": "Zmiana do wykrycia",
+    "durationLabel": "Dni zbierania próby",
+    "empty": "Uzupełnij brakujące liczby, aby sprawdzić wykonalność. Nie przyjmujemy ich za Ciebie.",
+    "badTarget": "Cel musi mieścić się między 0% a 100%. Zmień wielkość efektu lub jego jednostkę.",
+    "sparsePlan": "Za mało oczekiwanych zdarzeń do wiarygodnego przybliżenia normalnego. Potrzebna ocena rzadkich zdarzeń.",
+    "adequate": "Przy tych liczbach powinno wystarczyć osób, żeby wykryć zakładaną zmianę.",
+    "underpowered": "Ten scenariusz ma za małą moc. Wydłuż zbieranie próby lub rozważ zmianę, która wiarygodnie może dać większy efekt. Jeśli to nie ma sensu, zrezygnuj z tego A/B.",
+    "deadline": "Pełny odczyt wypada po zadanym terminie decyzji.",
+    "longer": "Przy założonym efekcie pełny odczyt wymaga około",
+    "unreachable": "Nawet skrajna zmiana nie osiągnie mocy 80% przy tej próbie.",
+    "sizingNote": "Zbieramy dane przez minimum 14 dni, potem pełnymi tygodniami. Na końcu czekamy na rejestrację i aktywację ostatnich osób. Przed startem sprawdź święta i promocje.",
+    "emptyResults": "Czeka na rzeczywiste dane. Planowana próba i prognozy nie są wynikami testu.",
+    "invalidCounts": "Podaj całkowite, nieujemne liczby zdarzeń nie większe od liczby przypisanych osób. Każdy wariant musi mieć co najmniej jedną osobę.",
+    "sparseResults": "Za mało zdarzeń lub ich braków w co najmniej jednym wariancie. Przybliżony test z jest niewiarygodny; potrzebna inna metoda.",
+    "srm": "Przydział odbiega od 50/50 (SRM p < 0,001). Wstrzymaj interpretację i sprawdź przyczynę.",
+    "provisional": "Podgląd obliczeń. Interpretacja końcowa czeka na ustalony horyzont, dojrzałe wyniki i kontrolę danych. Nie kończ testu po pierwszym istotnym odczycie.",
+    "significant": "Różnica między A i B jest istotna statystycznie. Przed decyzją sprawdź, czy osiągamy cel i czy inne ważne wyniki się nie pogorszyły.",
+    "notSignificant": "Wynik nie rozstrzyga, czy warianty się różnią.",
+    "notEnoughActual": "Zebrano mniej osób niż wymaga zapisany plan. Przed interpretacją sprawdź zgodność z ustaloną regułą zakończenia.",
+    "absolute": "Różnica B − A",
+    "ci": "95% przedział różnicy",
+    "pvalue": "p-value (dwustronne)",
+    "rates": "Wartości A / B",
+    "scenarioExport": "Scenariusz do omówienia; tekst planu wymaga przeglądu.",
+    "durationRule": "Zbieraj próbę przez co najmniej 14 dni, potem pełnymi tygodniami: 21, 28, 35 dni itd.",
+    "noRun": "Nie uruchamiaj teraz",
+    "scenarioReady": "Ruch wystarcza"
+  }
+};
+const data=JSON.parse(document.getElementById('card-data').textContent);
+const t=I18N[data.language], locale=data.language;
+const $=id=>document.getElementById(id), set=(id,value)=>{$(id).textContent=value;};
+const num=(x,d=0)=>Number.isFinite(x)?x.toLocaleString(locale,{maximumFractionDigits:d}):'…';
+const pct=x=>Number.isFinite(x)?`${num(x*100,3)}%`:'…';
+const days=x=>Number.isFinite(x)?`${num(x)} ${t.days}`:'…';
+const pp=x=>`${num(x*100,3)} pp`;
+const pformat=p=>p<0.0001?'< 0.0001':num(p,4);
+document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t[el.dataset.i18n];});
+document.title=`A/B · ${data.title}`;
+['title','hypothesis','control','treatment','population','metric','metric_definition','baseline_source','recommendation','decision_rule'].forEach(k=>set(k,data[k]));
+$('demo').hidden=!data.illustrative;
+const saved=data.calculator_supported?ABStats.plan(data):{error:'unsupported'};
+const blocked=[...data.blockers];
+if(!data.guardrails.length) blocked.push(t.noGuardrail);
+data.guardrails.forEach(g=>{
+ const item=document.createElement('article');item.className='guardrail';
+ for(const [tag,key,cls] of [['h3','name',''],['p','definition',''],['p','limit','limit']]){
+  const el=document.createElement(tag);el.textContent=g[key];el.className=cls;item.append(el);
+ } $('guardrails').append(item);
+});
+blocked.forEach(text=>{const li=document.createElement('li');li.textContent=text;$('blockers').append(li);});
+$('blockers').hidden=!blocked.length;
+set('saved-traffic',data.weekly_users===null?'…':`${num(data.weekly_users)} ${t.users}`);
+set('saved-baseline',pct(data.baseline));set('saved-target',pct(saved.target));
+set('saved-effect',data.effect===null?'…':`${data.direction==='down'?'−':'+'}${num(data.effect,3)} ${data.effect_type==='pp'?'pp':t.relative}`);
+set('saved-duration',days(data.recruitment_days));
+set('saved-readout',days([data.recruitment_days,data.primary_window_days,data.guardrail_window_days].every(Number.isFinite)?data.recruitment_days+Math.max(data.primary_window_days,data.guardrail_window_days):null));
+const afterDeadline=r=>data.max_readout_days!==null&&Number.isFinite(r.readout)&&r.readout>data.max_readout_days;
+const numericalPass=r=>!r.error&&!r.sparse&&r.power>=0.8&&!afterDeadline(r);
+const ready=numericalPass(saved)&&!blocked.length&&!data.illustrative;
+const beyondUsefulTime=r=>!r.error&&!r.sparse&&data.max_readout_days!==null&&(r.required_readout>data.max_readout_days||afterDeadline(r));
+function badge(id,label,tone){set(id,label);$(id).className=`badge ${tone}`;}
+const savedTone=ready?'good':beyondUsefulTime(saved)?'danger':'caution';
+badge('status',ready?t.ready:savedTone==='danger'?t.noRun:saved.error||blocked.length?t.draft:t.revise,savedTone);
+$('status').closest('.decision').dataset.tone=savedTone;
+$('effect-type').setAttribute('aria-label',t.effectUnit);
+$('effect-type').options[0].title=t.relative;$('effect-type').options[1].title=t.points;
+const specs=[
+ {key:'baseline',label:t.baseline,min:0.0001,max:99.9999,step:0.1,unit:'%',scale:100},
+ {key:'weekly_users',label:t.weekly,min:1,max:1000000,step:1,unit:'',log:true},
+ {key:'effect',label:t.effectLabel,min:0.001,max:100,step:0.1,unit:'',scale:1},
+ {key:'recruitment_days',label:t.durationLabel,min:14,max:364,step:7,unit:t.days,scale:1}
+];
+const scenario={...data};
+specs.forEach(s=>{
+ const wrapper=document.createElement('div');wrapper.className='control';
+ const head=document.createElement('div');head.className='control-head';
+ const label=document.createElement('label');label.htmlFor=`value-${s.key}`;label.textContent=s.label;
+ const holder=document.createElement('div');holder.className='input-unit';
+ const input=document.createElement('input');input.type='number';input.id=label.htmlFor;input.min=s.min;input.step=s.key==='recruitment_days'?'7':'any';input.max=s.key==='baseline'?99.9999:1e9;
+ const unit=document.createElement('span');unit.textContent=s.unit;holder.append(input);
+ if(s.key==='effect')holder.append($('effect-type'));else if(s.unit)holder.append(unit);
+ head.append(label,holder);
+ const range=document.createElement('input');range.type='range';range.id=`range-${s.key}`;range.setAttribute('aria-label',s.label);range.min=s.log?0:(s.key==='baseline'||s.key==='effect'?0.1:s.min);range.max=s.log?6:s.max;range.step=s.log?0.01:s.step;
+ wrapper.append(head,range);$('controls').append(wrapper);
+ s.input=input;s.range=range;
+ input.addEventListener('input',()=>{
+  const v=input.value===''?null:input.valueAsNumber;
+  scenario[s.key]=v===null?null:v/(s.scale||1);
+  syncRange(s,v);calculate();
+ });
+ range.addEventListener('input',()=>{
+  const v=s.log?Math.round(10**range.valueAsNumber):range.valueAsNumber;
+  input.value=Number(v.toPrecision(10));scenario[s.key]=v/(s.scale||1);calculate();
+ });
+});
+function syncRange(s,v){
+ if(v===null||!Number.isFinite(v))return;
+ const rv=s.log?Math.log10(Math.max(1,v)):v;
+ s.range.max=Math.max(s.log?6:s.max,rv);s.range.value=rv;
+}
+function reset(){
+ Object.assign(scenario,data);
+ specs.forEach(s=>{const v=data[s.key]===null?null:data[s.key]*(s.scale||1);s.input.value=v===null?'':Number(v.toPrecision(10));syncRange(s,v);});
+ $('effect-type').value=data.effect_type;calculate();
+}
+function calculate(){
+ const r=data.calculator_supported?ABStats.plan(scenario):{error:'unsupported'};
+ ['power','available','needed','needed-days','scenario-readout','mde','scenario-target'].forEach(id=>set(id,'…'));
+ $('power-fill').style.width='0%';$('calc-verdict').className='verdict';set('sizing-note','');
+ badge('scenario-status',t.draft,'caution');
+ if(r.error){set('scenario-verdict',r.error==='target'?t.badTarget:r.error==='unsupported'?t.unsupported:r.error==='duration'?t.durationRule:t.empty);return;}
+ set('scenario-target',`${pct(scenario.baseline)} → ${pct(r.target)}`);
+ set('power',r.power===null?'…':pct(r.power));$('power-fill').style.width=`${(r.power||0)*100}%`;
+ set('available',num(r.n));set('needed',num(r.need));set('needed-days',days(r.days));set('scenario-readout',days(r.readout));
+ set('mde',r.mde===null?t.unreachable:`${pp(r.mde)} · ${num(r.mde/scenario.baseline*100,3)} ${t.relative}`);
+ let verdict=r.sparse?t.sparsePlan:r.power>=0.8?t.adequate:t.underpowered;
+ if(r.power<0.8&&r.required_readout!==null)verdict+=` ${t.longer} ${days(r.required_readout)}.`;
+ if(afterDeadline(r)||(r.power<0.8&&data.max_readout_days!==null&&r.required_readout>data.max_readout_days))verdict+=` ${t.deadline}`;
+ const tone=numericalPass(r)?'good':beyondUsefulTime(r)?'danger':'caution';
+ set('scenario-verdict',verdict);$('calc-verdict').className=`verdict ${tone}`;
+ badge('scenario-status',tone==='good'?t.scenarioReady:tone==='danger'?t.noRun:t.revise,tone);
+ set('sizing-note',t.sizingNote);
+}
+$('effect-type').addEventListener('change',()=>{scenario.effect_type=$('effect-type').value;calculate();});
+$('reset').addEventListener('click',reset);$('print').addEventListener('click',()=>window.print());
+$('export').addEventListener('click',()=>{
+ const out={...scenario,blockers:[...data.blockers,t.scenarioExport]};
+ const url=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:'application/json'}));
+ const a=document.createElement('a');a.href=url;a.download='ab-scenario.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
+function resultMessage(message,cls=''){const p=document.createElement('p');p.className=`verdict ${cls}`;p.textContent=message;$('result-output').append(p);}
+function results(){
+ $('result-output').replaceChildren();
+ if(!data.calculator_supported){resultMessage(t.unsupported);return;}
+ const fields=['nA','xA','nB','xB'];
+ if(fields.some(id=>$(id).value==='')){resultMessage(t.emptyResults);return;}
+ const [nA,xA,nB,xB]=fields.map(id=>$(id).valueAsNumber),r=ABStats.observed(nA,xA,nB,xB);
+ if(r.error){resultMessage(r.error==='sparse'?t.sparseResults:t.invalidCounts);return;}
+ const metrics=document.createElement('div');metrics.className='result-metrics';
+ for(const [label,value] of [[t.rates,`${pct(r.a)} / ${pct(r.b)}`],[t.absolute,pp(r.diff)],[t.pvalue,pformat(r.p)],[t.ci,`${pp(r.low)} … ${pp(r.high)}`]]){
+  const cell=document.createElement('div'),small=document.createElement('small'),strong=document.createElement('strong');small.textContent=label;strong.textContent=value;cell.append(small,strong);metrics.append(cell);
+ } $('result-output').append(metrics);
+ if(r.srm<0.001){resultMessage(t.srm);return;}
+ if(!$('complete').checked||!$('quality').checked){resultMessage(t.provisional);return;}
+ if(saved.need!==undefined&&saved.need!==null&&Math.min(nA,nB)<saved.need){resultMessage(t.notEnoughActual);return;}
+ resultMessage(r.p<0.05?t.significant:t.notSignificant);
+}
+['nA','xA','nB','xB','complete','quality'].forEach(id=>$(id).addEventListener('input',results));
+$('unsupported').hidden=data.calculator_supported;$('scenario-fields').disabled=!data.calculator_supported;$('result-fields').disabled=!data.calculator_supported;$('export').disabled=!data.calculator_supported;
+reset();results();
+</script>
+</body>
+</html>

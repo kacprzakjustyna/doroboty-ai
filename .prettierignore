@@ -8,3 +8,6 @@ artifacts
 # Preserve the versioned reference byte-for-byte; checked by its own scripts.
 docs/design-system/agent-kit/
 docs/production-readiness.html
+
+# Rendered A/B test cards are generated artifacts; the skill owns their formatting.
+experiments/**/*.html
