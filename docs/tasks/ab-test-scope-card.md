@@ -29,9 +29,14 @@ copied into this repository), `discovery/data/applications.csv` and `purchases.c
   invites fall 26.3% -> 24.1% and continuations 33.6% -> 30.1%. Observational, not randomized;
   it motivates the test rather than proving anything. This matches the S20 note in the
   discovery documents.
-- Repeat purchase within 90 days: 1 042 of 2 376 purchases with a complete window = **43.9%**.
-  The discovery documents state 30% for the same idea; the definitions differ and must be
-  reconciled before anyone links a test result to the 30% -> 60% goal.
+- Repeat purchase, under the definition adopted in `supersprint/tydzien-2/01-cel.md` (a company's
+  new paid purchase within 90 days of its first purchase in month M, each company counted once,
+  only cohorts with a complete 90-day window before the last purchase in the data, 2026-09-28):
+  **45.0%** for January 2025 - May 2026 (988 of 2 196) and **30.0%** for June 2026 (54 of 180).
+  Recomputed from `purchases.csv`, reproducing that document company for company, month by month
+  (monthly rates 43.8-46.3% before the drop).
+  The earlier 43.9% in this note was a different cut - per purchase across the whole period - so
+  it is the long-run average, not a competing definition. **There is no conflict to resolve.**
 
 ## Design decisions and why
 
@@ -41,12 +46,23 @@ copied into this repository), `discovery/data/applications.csv` and `purchases.c
   that reason, not because it is the cheapest to measure.
 - **Denominator is all assigned applications**, not screened ones, so the card cannot improve the
   metric by slowing the recruiter down.
-- **Repeat purchase was rejected as the primary metric**: at 33 purchases per week, detecting
-  43.9% -> 50% needs roughly 15 months of recruitment plus a 90-day window. The hold rate is a
-  proxy and the card says so.
+- **Repeat purchase was rejected as the primary metric**: against the 30.0% baseline and 180
+  companies per monthly cohort, a realistic five-point contribution (30% -> 35%) needs about 15
+  months of recruitment plus the 90-day window. The hold rate is a proxy and the card says so.
+- **Card content comes from the candidate's existing answer** (decided 2026-11-13), extracted by
+  rule, with empty fields left empty. Nothing changes on the candidate side and the candidate-side
+  assistant is not built for this test, so what the test measures is "a card built from what
+  candidates already write", not "a perfectly filled card".
 - **Randomization unit: the application**, assigned at submission, 50/50. Recruiter-level
-  assignment would remove contamination but needs 3-6x the sample and cluster-adjusted
-  calculations; the bundled calculator does not support that design.
+  assignment would remove contamination but costs about 7 weeks of recruitment at an
+  intra-recruiter correlation of 0.02 and 14 weeks at 0.05, and above roughly 0.08 it is
+  unreachable at any duration, because a cluster design's power comes from the number of clusters
+  and there are only 477 recruiters. Waiting longer adds applications to existing recruiters, not
+  recruiters. That correlation has not been measured yet and can be computed from the data.
+- **The recruiter-level alternative stays in the write-up** rather than being dropped (decided
+  2026-11-13). It costs nothing in a simulated test, it answers the most likely reviewer question
+  ("how do you know the recruiter did not learn?"), and the ceiling result above is the clearest
+  teaching point in the whole design.
 - **Known contamination**: a recruiter sees both variants and learns to look for specifics in A as
   well, which biases the measured difference toward zero. A positive result is therefore
   trustworthy; a null result is ambiguous. Recorded as a blocker on the card.
@@ -66,8 +82,12 @@ continuation after the first interview (3.6% today, 35-day window) and invite ra
 
 - `experiments/karta-zakresu/card.json` - the plan.
 - `experiments/karta-zakresu/ab-test-card.html` - standalone offline card with the calculator.
-- `experiments/karta-zakresu/ab-test-card-v1.html` - earlier render, kept; its recommendation text
-  said 60 days instead of the correct 70.
+- `experiments/karta-zakresu/ab-test-card-v1.html` and `-v2.html` - earlier renders, kept. v1's
+  recommendation said 60 days instead of the correct 70; v2 still carried the resolved
+  repeat-purchase question and the pre-decision description of the card's content.
+- A Polish narrative write-up of the five parts for a reader outside the project, as a Claude doc:
+  https://claude.ai/artifact/CAYC2uGhpCV6CPoT6GmRNw - context and diagnosis, the five parts, what
+  the test cannot settle, the rejected recruiter-level alternative and the sources of every figure.
 - `.prettierignore` now excludes `experiments/**/*.html`, because the rendered cards are generated
   artifacts, as `docs/production-readiness.html` already is.
 
@@ -88,10 +108,12 @@ continuation after the first interview (3.6% today, 35-day window) and invite ra
 
 ## Open questions
 
-- Which definition of repeat purchase is canonical, 43.9% (per purchase, 90-day window, from the
-  data) or the 30% in the discovery documents.
-- The candidate-side card does not exist. A real test needs the card to be filled from the
-  candidate's own words, so either the assistant is built first or the content is extracted from
-  the existing free-text answer.
-- Whether the course write-up should also show the recruiter-level (cluster) variant as the
-  contamination-free alternative, with its larger sample requirement.
+- How much recruiters differ from each other in hold rate (the intra-recruiter correlation). It
+  does not change this plan, but it decides whether the recruiter-level alternative could ever
+  work. Computable from `applications.csv`.
+- How many of the four card fields can actually be filled from current answers. Check on a sample
+  before a real test: a card that is mostly empty measures something else.
+
+Resolved on 2026-11-13: the repeat-purchase definition (no conflict; `01-cel.md` is canonical),
+the source of the card's content (existing answers, no candidate-side assistant), and keeping the
+recruiter-level alternative in the write-up.
