@@ -72,11 +72,6 @@ Option 2 is therefore implemented: the check verifies site health instead of bui
   explicit note that a failed or stuck deploy which leaves the previous build serving correctly now
   passes.
 
-## Verification
-
-Recorded in "Results" below. Local runs only; a workflow's own behavior on `main` cannot be proven
-from this branch.
-
 ## Results
 
 - Reproduction of the diagnosis: both builds above, plus `curl` of the live page
@@ -93,4 +88,34 @@ from this branch.
   page with no hashed assets → exit 1; page that resets the connection twice and then answers →
   exit 0 after retries.
 - No argument → exit 2 with usage.
-- `./scripts/verify` on Node 24.22.1: pass.
+- `./scripts/verify` on Node 24.22.1: pass — formatting, archived-kit integrity, lint, types, 30
+  unit tests, participant packet, production build (the pre-existing >500 kB chunk warning stays)
+  and 39 Chromium journeys.
+
+### The workflow itself, run on this branch through `workflow_dispatch`
+
+- Run [43484839974](https://github.com/kacprzakjustyna/doroboty-ai/actions/runs/43484839974)
+  against the real site: **success** in 12 seconds of run time, logging "Production is healthy …
+  serves assets/icon-DQw2TG_i.svg, assets/index-cZbaOk1F.js, assets/index-BNodhuhD.css". The same
+  commit's state of `main` failed this workflow twice in a row before the change
+  ([43481085848](https://github.com/kacprzakjustyna/doroboty-ai/actions/runs/43481085848),
+  [43469402510](https://github.com/kacprzakjustyna/doroboty-ai/actions/runs/43469402510)), which is
+  the false alarm.
+- Run [43484932995](https://github.com/kacprzakjustyna/doroboty-ai/actions/runs/43484932995) with
+  the site address set to `…/test-alert`: **failure** after six 404 retries, about two minutes,
+  ending "Production check failed within 120s". This is the deliberate failure the owner uses to
+  confirm the alert email still arrives, so that run sent one.
+- Not proven from here: the `push` trigger on `main`, which only runs once this branch is merged.
+
+## Limits of this fix
+
+The workflow can no longer tell a successful deploy from a stuck one, because both leave a healthy
+site. Two ways out, neither taken here:
+
+- The preferred one, from the brief: the owner adds `VITE_PUBLIC_POSTHOG_KEY` as an Actions secret,
+  the workflow builds again with it in `env`, and `scripts/check-production.mjs` goes back to
+  comparing hashes. That reverts this commit's script and workflow.
+- Without any secret: have the Netlify build write its `COMMIT_REF` into the published output and
+  have the check compare that value with `GITHUB_SHA`. That restores the freshness guarantee and
+  survives any future build variable, but it changes the build output and was outside the scope
+  given, so it is only noted.
