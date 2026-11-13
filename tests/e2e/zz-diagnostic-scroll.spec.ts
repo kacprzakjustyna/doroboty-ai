@@ -49,6 +49,38 @@ for (let run = 0; run < 12; run++) {
         { passive: true },
       );
       new ResizeObserver(() => snap("resize-doc")).observe(document.documentElement);
+      const sizes = new Map<Element, number>();
+      const name = (el: Element) =>
+        `${el.tagName.toLowerCase()}${el.id ? "#" + el.id : ""}.${[...el.classList].slice(0, 2).join(".")}`;
+      const watch = new ResizeObserver((entries) => {
+        for (const e of entries) {
+          const h = Math.round(e.target.getBoundingClientRect().height * 100) / 100;
+          const before = sizes.get(e.target);
+          sizes.set(e.target, h);
+          if (before !== undefined && before !== h)
+            snap("grew", {
+              el: name(e.target),
+              from: before,
+              to: h,
+              faces: [...document.fonts]
+                .filter((f) => f.status === "loaded")
+                .map((f) => `${f.family}:${f.weight}`)
+                .join(","),
+            });
+        }
+      });
+      const observeAll = () =>
+        document
+          .querySelectorAll(
+            "header, footer, main, article, nav, section, aside, .pp-offer-grid > *, .pp-offer-grid > * > *, .pp-offer-hero *, img",
+          )
+          .forEach((el) => {
+            if (!sizes.has(el)) {
+              sizes.set(el, Math.round(el.getBoundingClientRect().height * 100) / 100);
+              watch.observe(el);
+            }
+          });
+      new MutationObserver(observeAll).observe(document, { childList: true, subtree: true });
       document.fonts?.ready.then(() => snap("fonts-ready"));
       window.addEventListener("load", () => snap("load"));
     });
