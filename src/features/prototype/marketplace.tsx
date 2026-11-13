@@ -179,6 +179,7 @@ export function JobsPage() {
               <input
                 name="query"
                 aria-label="Szukaj ofert"
+                data-ph-no-autocapture=""
                 maxLength={100}
                 defaultValue={filters.query ?? ""}
                 placeholder="Stanowisko, firma lub słowo kluczowe"
