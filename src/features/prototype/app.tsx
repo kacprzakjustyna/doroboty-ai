@@ -1,4 +1,5 @@
 import { HashRouter, Routes, Route, Navigate } from "react-router";
+import { useAnalyticsPageviews } from "@/lib/use-analytics-pageviews";
 import { PrototypeProvider } from "./store";
 import { RenderErrorBoundary } from "./error-boundary";
 import { Shell, NotFound } from "./shell";
@@ -18,6 +19,11 @@ import {
 import { EmployerJobs, EmployerJobEditor, CompanyEditor } from "./employer";
 import { SettingsPage, PrivacyPage } from "./settings";
 import { CasePage } from "./case";
+function AnalyticsPageviews() {
+  useAnalyticsPageviews();
+  return null;
+}
+
 function AppRoutes() {
   return (
     <Routes>
@@ -152,6 +158,7 @@ export function App() {
   return (
     <PrototypeProvider>
       <HashRouter>
+        <AnalyticsPageviews />
         <RenderErrorBoundary>
           <AppRoutes />
         </RenderErrorBoundary>

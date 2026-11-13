@@ -67,6 +67,7 @@ export function SettingsPage() {
             Importuj dane
             <input
               className="sr-only"
+              data-ph-no-autocapture=""
               type="file"
               accept="application/json,.json"
               aria-label="Importuj plik scenariusza"
