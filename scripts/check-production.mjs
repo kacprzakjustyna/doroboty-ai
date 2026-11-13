@@ -4,9 +4,11 @@
 //
 // Vite gives every entry file a content hash (assets/index-<hash>.js), so a
 // locally built index.html names exactly the files the deployed one must name.
-// The script polls the site until those names appear, then checks that each
-// asset answers. It exits non-zero on timeout or error, which fails the
-// workflow and makes GitHub notify the person who pushed.
+// The script repeats one complete check (page names those files, every file
+// answers, security headers present) until it passes or the time limit ends.
+// Each request has its own timeout, so a hung or reset connection becomes a
+// retry, not a crash. A commit that does not change the build (for example
+// docs only) passes as soon as the site serves the unchanged build.
 import { readFile } from "node:fs/promises";
 
 const [siteArg, indexPath] = process.argv.slice(2);
@@ -17,6 +19,7 @@ if (!siteArg || !indexPath) {
 const site = siteArg.replace(/\/+$/, "");
 const timeoutSeconds = Number(process.env.CHECK_TIMEOUT_SECONDS ?? 600);
 const intervalSeconds = Number(process.env.CHECK_INTERVAL_SECONDS ?? 20);
+const requestSeconds = Number(process.env.CHECK_REQUEST_SECONDS ?? 15);
 
 const assetPattern = /(?:src|href)="\.?\/?(assets\/[^"]+)"/g;
 const assetsIn = (html) => [...html.matchAll(assetPattern)].map((match) => match[1]);
@@ -28,45 +31,45 @@ if (expected.length === 0) {
 }
 console.log(`Expecting ${site}/ to serve: ${expected.join(", ")}`);
 
+const get = (url) =>
+  fetch(url, { cache: "no-store", signal: AbortSignal.timeout(requestSeconds * 1000) });
+
+// One complete check. Returns null when everything passes, otherwise what was wrong.
+async function attempt() {
+  const home = await get(`${site}/`);
+  if (!home.ok) return `page answered HTTP ${home.status}`;
+  const served = assetsIn(await home.text());
+  if (!expected.every((asset) => served.includes(asset)))
+    return `not published yet (page names: ${served.join(", ") || "no hashed assets"})`;
+  const problems = [];
+  if (!home.headers.get("strict-transport-security")) problems.push("missing HSTS header");
+  if (!home.headers.get("x-content-type-options")) problems.push("missing nosniff header");
+  for (const asset of expected) {
+    const response = await get(`${site}/${asset}`);
+    await response.arrayBuffer();
+    if (!response.ok) problems.push(`${asset}: HTTP ${response.status}`);
+  }
+  return problems.length ? `published, but ${problems.join("; ")}` : null;
+}
+
 const sleep = (seconds) => new Promise((resolve) => setTimeout(resolve, seconds * 1000));
 const deadline = Date.now() + timeoutSeconds * 1000;
-let lastSeen = "nothing yet";
-
 while (true) {
+  let problem;
   try {
-    const response = await fetch(`${site}/`, { cache: "no-store" });
-    if (response.ok) {
-      const served = assetsIn(await response.text());
-      if (expected.every((asset) => served.includes(asset))) break;
-      lastSeen = served.join(", ") || "a page without hashed assets";
-    } else {
-      lastSeen = `HTTP ${response.status}`;
-    }
+    problem = await attempt();
   } catch (error) {
-    lastSeen = `request error: ${error.message}`;
+    problem = `request error: ${error.cause?.code ?? error.name ?? "unknown"} (${error.message})`;
   }
+  if (problem === null) break;
   if (Date.now() >= deadline) {
     console.error(
-      `The site did not serve this commit's build within ${timeoutSeconds}s. ` +
-        `Last seen: ${lastSeen}. Check the latest deploy in Netlify.`,
+      `Production check failed within ${timeoutSeconds}s. Last result: ${problem}. ` +
+        `Check the latest deploy in Netlify.`,
     );
     process.exit(1);
   }
-  console.log(`Not published yet (seen: ${lastSeen}); retrying in ${intervalSeconds}s.`);
+  console.log(`${problem}; retrying in ${intervalSeconds}s.`);
   await sleep(intervalSeconds);
-}
-
-const failures = [];
-for (const asset of expected) {
-  const response = await fetch(`${site}/${asset}`, { cache: "no-store" });
-  if (!response.ok) failures.push(`${asset}: HTTP ${response.status}`);
-}
-const home = await fetch(`${site}/`, { cache: "no-store" });
-if (!home.headers.get("strict-transport-security")) failures.push("missing HSTS header");
-if (!home.headers.get("x-content-type-options")) failures.push("missing nosniff header");
-
-if (failures.length > 0) {
-  console.error(`Published, but checks failed: ${failures.join("; ")}`);
-  process.exit(1);
 }
 console.log(`Production serves this commit's build and all ${expected.length} entry assets.`);
