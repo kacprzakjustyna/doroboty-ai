@@ -619,10 +619,18 @@ test("offer section links survive copied URLs and restore section focus through 
   await page.keyboard.press("Enter");
   await expect(page.locator("#employer")).toBeFocused();
   await expect(page).toHaveURL(/#\/oferty\/ai-product-manager#employer$/);
+  // A copied link opens cold: hold the bundled fonts back so the section scroll has to
+  // survive the font swap (CI hit this race intermittently with an Arial-like fallback).
+  await context.route(/\.woff2$/, async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    await route.continue();
+  });
   const copied = await context.newPage();
   await copied.goto(destination);
   await expect(copied.locator(".pp-offer-hero h1")).toHaveText("AI Product Manager");
   await expect(copied.locator("#employer")).toBeFocused();
+  // Measure the settled page, after the font swap reflows the content above the section.
+  await copied.evaluate(() => document.fonts.ready.then(() => undefined));
   expect((await copied.locator("#employer").boundingBox())!.y).toBeLessThan(50);
   await copied.close();
   await page.getByRole("link", { name: "O roli", exact: true }).click();

@@ -327,13 +327,27 @@ export function JobPage() {
     const target =
       location.hash === "#role" ? "role" : location.hash === "#employer" ? "employer" : null;
     if (!target) return;
+    let active = true;
     // Run after the shell's route focus handling, including direct deep links.
     const frame = requestAnimationFrame(() => {
       const section = document.getElementById(target);
-      section?.focus({ preventScroll: true });
-      section?.scrollIntoView({ behavior: "instant", block: "start" });
+      if (!section) return;
+      // A cold deep link reaches this frame before the bundled fonts have swapped in
+      // (font-display: swap). Scrolling now would use fallback-font metrics, and the reflow
+      // after the swap would leave the section below the top edge. Force layout so every
+      // needed face is requested, then focus and scroll once the fonts have settled.
+      section.getBoundingClientRect();
+      const fonts = document.fonts?.ready ?? Promise.resolve();
+      void fonts.then(() => {
+        if (!active) return;
+        section.focus({ preventScroll: true });
+        section.scrollIntoView({ behavior: "instant", block: "start" });
+      });
     });
-    return () => cancelAnimationFrame(frame);
+    return () => {
+      active = false;
+      cancelAnimationFrame(frame);
+    };
   }, [location.hash, location.key, slug]);
   const { state, run } = usePrototype();
   const person = currentPerson(state);
