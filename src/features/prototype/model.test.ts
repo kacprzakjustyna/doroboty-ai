@@ -33,7 +33,7 @@ describe("coherent browser scenario", () => {
     };
     expect(() => transition(s, input, time)).toThrow("Zatwierdź");
     expect(() => transition(submitted(), { ...input, consent: true }, time)).toThrow("już wysłana");
-    expect(s.applications).toHaveLength(1);
+    expect(s.applications.filter((x) => x.candidateId === "candidate-anna")).toHaveLength(0);
   });
   it("preserves approved sources while profile and notes evolve", () => {
     const s = submitted();
@@ -112,6 +112,19 @@ describe("coherent browser scenario", () => {
     s = transition(s, { type: "toggle_saved", jobId: s.jobs[1].id });
     expect(s.drafts[0].candidateId).toBe("candidate-anna");
     expect(s.saved[0].candidateId).toBe("candidate-anna");
+  });
+  it("seeds the three discovery cases for BrightLabs only, as applicants and not personas", () => {
+    const s = initialState();
+    const cases = s.applications.filter((x) => x.id.startsWith("application-case-"));
+    expect(cases.map((x) => [x.candidateName, x.score, x.stage])).toEqual([
+      ["Kuba", 82, "submitted"],
+      ["Natalia", 83, "submitted"],
+      ["Ola", 83, "submitted"],
+    ]);
+    expect(new Set(cases.map((x) => x.companyId))).toEqual(
+      new Set([s.people.find((x) => x.id === "employer-brightlabs")!.companyId]),
+    );
+    expect(s.people.some((x) => cases.some((c) => c.candidateId === x.id))).toBe(false);
   });
   it("validates broken references, duplicate submissions and invalid histories on import", () => {
     const s = submitted();

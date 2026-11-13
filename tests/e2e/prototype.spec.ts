@@ -167,6 +167,31 @@ test("another company cannot see or change a candidate application", async ({ pa
   await page.goto("/#/app/kandydaci/application-example");
   await expect(page.getByRole("heading", { name: "Nie znaleziono strony" })).toBeVisible();
 });
+test("BrightLabs recruiter sees the discovery cases with their submitted text", async ({
+  page,
+}) => {
+  await choose(page, "Karolina Wiśniewska");
+  await page.goto("/#/app/kandydaci");
+  for (const name of ["Marek Nowak", "Kuba", "Natalia", "Ola"])
+    await expect(page.getByRole("link", { name, exact: true })).toBeVisible();
+  await page.getByRole("link", { name: "Natalia", exact: true }).click();
+  await expect(page.locator("main")).toContainText("AI Engineer — wyszukiwarka dokumentów");
+  await expect(page.locator("main")).toContainText(
+    "Mam doświadczenie we wdrażaniu wyszukiwania semantycznego",
+  );
+  const card = page.getByRole("region", { name: "Co kandydat zrobił sam" });
+  await expect(card).toContainText("Przygotowywałam demo, prezentację i część promptów.");
+  await expect(card).toContainText("Kandydat tego nie podał.");
+  await expect(card).toContainText("Wypełnione pola: 3/4 · brak: Efekt");
+  await expect(card).toContainText("nie ocenia kandydata");
+  await page.goto("/#/app/kandydaci/application-example");
+  await expect(page.getByRole("region", { name: "Co kandydat zrobił sam" })).toHaveCount(0);
+  await page.goto("/#/app/kandydaci");
+  await expect(page.locator("main")).toContainText("Karta zakresu · Wypełnione pola: 4/4");
+  await choose(page, "Tomasz Zieliński");
+  await page.goto("/#/app/kandydaci");
+  await expect(page.getByRole("link", { name: "Kuba", exact: true })).toHaveCount(0);
+});
 test("candidate withdrawal is confirmed and terminal", async ({ page }) => {
   await application(page);
   await page.getByRole("link", { name: "AI Product Manager", exact: true }).click();
@@ -530,7 +555,7 @@ test("restored company and public navigation keep their structure across screen 
   await page.setViewportSize({ width: 1440, height: 1000 });
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Dobra robota.");
   await expect(page.getByRole("textbox", { name: "Szukaj ofert", exact: true })).toBeVisible();
-  await expect(page.locator("[data-job-page-summary]")).toHaveText("Oferty 1–6 z 6");
+  await expect(page.locator("[data-job-page-summary]")).toHaveText("Oferty 1–7 z 7");
   await page.screenshot({ path: "artifacts/original-list-layout-desktop.png", fullPage: true });
 });
 

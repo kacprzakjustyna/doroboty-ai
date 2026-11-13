@@ -193,6 +193,29 @@
       "publishedAt": "2026-09-08T09:00:00.000Z",
       "expiryAt": "2026-11-08T23:59:59.000Z",
       "verificationStatus": "editorial"
+    },
+    {
+      "id": "20000000-0000-4000-8000-000000000007",
+      "slug": "ai-engineer-wyszukiwarka-dokumentow",
+      "companyId": "10000000-0000-4000-8000-000000000001",
+      "title": "AI Engineer — wyszukiwarka dokumentów",
+      "summary": "Zbuduj własny komponent wyszukiwania w dokumentach operacyjnych, z ewaluacją i utrzymaniem.",
+      "description": "W BrightLabs rozwijamy zespół zajmujący się zastosowaniami AI. Obszar pracy to dokumenty operacyjne.\n\n### Pierwsze zadanie\n\nIntegracja modelu z istniejącą usługą. Obszar wdrożenia to dokumenty operacyjne.\n\n### Za co odpowiadasz\n\nOdpowiadasz za własny komponent, ewaluację i jego utrzymanie. Pozostałe API rozwija drugi inżynier. Możesz wybierać sposób implementacji w ramach istniejącej usługi; zmiany architektury uzgadniamy z zespołem.\n\n### Zespół\n\nZespół ma osobę odpowiedzialną za operacje i inżyniera. Na razie nie powstaje osobny dział AI.\n\n### Ustalenia organizacyjne\n\nPraca zdalna, B2B: 13 500–17 500 zł netto miesięcznie (faktura). Rekrutacja to rozmowa z rekruterem, następnie omówienie projektu z managerem.\n\nPotrzebujemy osoby, która potrafi rozmawiać o swojej dotychczasowej pracy, współpracować z innymi i wyjaśnić decyzje. Nie oczekujemy znajomości wszystkich narzędzi z rynku. Na rozmowie możemy wrócić do jednego z opisanych projektów. Materiały klientów mogą pozostać prywatne; opisz wtedy, jaki zakres można omówić.",
+      "category": "build",
+      "function": "engineering",
+      "remoteStatus": "remote",
+      "locations": ["Polska"],
+      "seniority": "mid",
+      "contract": "b2b",
+      "salaryMin": 13500,
+      "salaryMax": 17500,
+      "salaryCurrency": "PLN",
+      "salaryPeriod": "month",
+      "salaryKind": "net",
+      "publicationStatus": "published",
+      "publishedAt": "2026-10-28T09:00:00.000Z",
+      "expiryAt": "2026-11-27T23:59:59.000Z",
+      "verificationStatus": "unverified"
     }
   ]
 }

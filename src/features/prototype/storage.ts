@@ -1,4 +1,4 @@
-import { initialState, stateSchema, type State } from "./model";
+import { initialState, stateSchema, withDiscoveryCases, type State } from "./model";
 export const STORAGE_KEY = "doroboty.prototype.v1";
 export const MAX_IMPORT_BYTES = 2_000_000;
 export interface StoragePort {
@@ -32,7 +32,7 @@ export function readState(storage: StoragePort | null) {
   try {
     raw = storage.getItem(STORAGE_KEY);
     return {
-      state: raw ? parseState(raw) : initialState(),
+      state: raw ? withDiscoveryCases(parseState(raw)) : initialState(),
       issue: "",
       blocked: false,
       original: null,
