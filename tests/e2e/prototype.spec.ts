@@ -1058,3 +1058,32 @@ test("settings explain where to report a problem", async ({ page }) => {
     /issues\/new\?template=bug\.yml$/,
   );
 });
+test("a section deep link stays aligned when content above grows after the first scroll", async ({
+  page,
+}) => {
+  // Reproduces the CI-only layout shift: content above #employer grows by 52px
+  // shortly after the page has already scrolled to the section. In CI the
+  // browser's scroll anchoring did not compensate (scrollY stayed put while the
+  // document grew), so it is disabled here to make the condition deterministic.
+  await page.addInitScript(() => {
+    document.addEventListener("DOMContentLoaded", () => {
+      const style = document.createElement("style");
+      style.textContent = "* { overflow-anchor: none !important; }";
+      document.head.append(style);
+    });
+    new MutationObserver((_, observer) => {
+      const hero = document.querySelector(".pp-offer-hero");
+      if (!hero) return;
+      observer.disconnect();
+      setTimeout(() => {
+        const late = document.createElement("div");
+        late.style.height = "52px";
+        hero.prepend(late);
+      }, 150);
+    }).observe(document, { childList: true, subtree: true });
+  });
+  await page.goto("/#/oferty/ai-product-manager#employer");
+  await expect(page.locator("#employer")).toBeFocused();
+  await page.waitForTimeout(400);
+  expect((await page.locator("#employer").boundingBox())!.y).toBeLessThan(50);
+});
