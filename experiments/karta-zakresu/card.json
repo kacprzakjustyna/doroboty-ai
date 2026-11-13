@@ -1,0 +1,42 @@
+{
+  "language": "pl",
+  "illustrative": false,
+  "title": "Karta zakresu w widoku rekrutera (I2)",
+  "hypothesis": "Jeśli rekruter zobaczy na górze aplikacji kartę zakresu — cztery stałe pola (Moja część / Co robił zespół / Efekt / Jak to sprawdzono) wypełnione słowami kandydata — to rzadziej odłoży aplikację jako „wstrzymaną”, ponieważ będzie w stanie stwierdzić, co kandydat zrobił sam, i nie będzie musiał odkładać decyzji. Cel ustawiony na próg działania: spadek o 15% względnych (z 17,0% do 14,4%). Realistycznie spodziewamy się mniej, dlatego test jest zaprojektowany na najmniejszą zmianę, która uzasadniałaby wdrożenie, a nie na nadzieję.",
+  "control": "Wariant A: obecny widok aplikacji u rekrutera — odpowiedź kandydata, CV, Match Score, historia procesu. Bez karty.",
+  "treatment": "Wariant B: ten sam widok plus karta zakresu na górze zakładki „Odpowiedź”: cztery stałe pola, licznik wypełnionych pól (N/4) i nota o ograniczeniach metody. Treść kart powstaje z dotychczasowej odpowiedzi kandydata — nic nie jest dopisywane ani ulepszane, a pole, którego kandydat nie poruszył, zostaje puste z adnotacją „Kandydat tego nie podał”. Kandydat niczego dodatkowo nie wypełnia: po jego stronie nie zmienia się nic.",
+  "population": "Wszystkie aplikacje złożone na opublikowane ogłoszenia w DoRoboty. Wariant przypisywany losowo w momencie złożenia aplikacji, zanim rekruter ją otworzy. Wykluczenia (konta testowe, ogłoszenia wewnętrzne) ustalone przed startem. Uwaga: ten sam rekruter widzi aplikacje z obu wariantów.",
+  "metric": "Odsetek aplikacji odłożonych jako „wstrzymane”",
+  "metric_definition": "Aplikacje z decyzją przesiewową „wstrzymane” w ciągu 25 dni / wszystkie aplikacje przypisane do wariantu. Mianownik obejmuje także aplikacje bez żadnej decyzji, więc karta nie może poprawić wyniku przez samo spowolnienie rekrutera. Kierunek pożądany: w dół.",
+  "baseline_source": "Dane discovery DoRoboty, applications.csv, 45 000 aplikacji z okresu 2025-11-07 – 2026-06-30: 7 641 aplikacji ze statusem „wstrzymane” = 17,0%. Okno 25 dni pokrywa 99% decyzji przesiewowych w tych danych (mediana 2 dni, p99 24 dni). Tempo napływu: 1 340 aplikacji tygodniowo.",
+  "baseline": 0.1698,
+  "effect": 15,
+  "effect_type": "relative",
+  "direction": "down",
+  "weekly_users": 1340,
+  "recruitment_days": 35,
+  "primary_window_days": 25,
+  "guardrail_window_days": 35,
+  "max_readout_days": 120,
+  "calculator_supported": true,
+  "guardrails": [
+    {
+      "name": "Kontynuacja po pierwszej rozmowie",
+      "definition": "Aplikacje z decyzją „kontynuujemy” po pierwszej rozmowie w ciągu 35 dni / wszystkie aplikacje przypisane do wariantu. Dziś 3,6% (1 620 z 45 000). Okno 35 dni pokrywa wszystkie decyzje w danych (mediana 9 dni, maksimum 34).",
+      "limit": "Jeśli w wariancie B wskaźnik spadnie istotnie statystycznie względem A po pełnym okresie obserwacji, wstrzymujemy wdrożenie i sprawdzamy, czy karta nie skłania do pochopnych decyzji. Brak wykrytego spadku nie dowodzi braku szkody."
+    },
+    {
+      "name": "Odsetek zaproszeń",
+      "definition": "Aplikacje zakończone zaproszeniem w ciągu 25 dni / wszystkie aplikacje przypisane do wariantu. Dziś 14,7% (6 600 z 45 000).",
+      "limit": "Jeśli w wariancie B odsetek zaproszeń spadnie istotnie statystycznie względem A, wstrzymujemy wdrożenie: mniej „wstrzymanych” nie może oznaczać, że karta po prostu zamyka kandydatom drogę do rozmowy."
+    }
+  ],
+  "blockers": [
+    "Kontaminacja: ten sam rekruter przegląda aplikacje z obu wariantów i uczy się czytać kartę, więc zacznie szukać konkretów także w wariancie A. To zaniża zmierzoną różnicę. Wniosek praktyczny: wynik pozytywny jest wiarygodny, a brak różnicy jest niejednoznaczny. Alternatywa — losowanie po rekruterach — usuwa kontaminację, ale wymaga 1,3–2,8 raza dłuższego testu (7–14 tygodni, zależnie od tego, jak bardzo rekruterzy różnią się między sobą), a powyżej pewnego poziomu tych różnic jest nieosiągalna przy dowolnie długim teście, bo rekruterów jest tylko 477.",
+    "Test wymaga prawdziwego ruchu DoRoboty i karty działającej na produkcji. Prototyp AIPH3 (localStorage, persony, dane syntetyczne) nie generuje ruchu i nie może tego testu wykonać — na kursie pozostaje symulacja.",
+    "Jakość wydobywania treści karty wyznacza górną granicę efektu. Karta powstaje regułowo z dotychczasowej odpowiedzi kandydata, więc jeśli odpowiedź nie zawiera konkretów, karta też ich nie pokaże. Test mierzy zatem „karta z tego, co kandydaci już piszą”, a nie „karta wypełniona idealnie”. Przed startem trzeba sprawdzić na próbce aplikacji, ile pól realnie udaje się wypełnić.",
+    "Nie wiadomo, jak bardzo rekruterzy różnią się między sobą odsetkiem „wstrzymanych”. Ta liczba nie zmienia planu przy losowaniu aplikacji, ale decyduje, czy wariant z losowaniem rekruterów jest w ogóle wykonalny. Da się ją policzyć z danych przed startem."
+  ],
+  "recommendation": "Warto uruchomić, świadomie i z zastrzeżeniem. Przy 1 340 aplikacjach tygodniowo wykrycie spadku „wstrzymanych” z 17,0% do 14,4% wymaga 5 tygodni zbierania danych (3 203 aplikacji na wariant, przy dostępnych 3 350) i czasu na dojrzenie decyzji — razem 70 dni do odczytu, bo najdłuższy bezpiecznik potrzebuje 35 dni. To jest wykonalne. Wybraliśmy tę metrykę nie dlatego, że jest najszybsza, lecz dlatego, że jest najbliższym obserwowalnym śladem diagnozy O01: aplikacja trafia do „wstrzymanych” dokładnie wtedy, gdy rekruter nie umie stwierdzić, co kandydat zrobił sam. Prawdziwy cel — powtórny zakup — mierzyć się tu nie da. Według definicji z `01-cel.md` baza to 30,0% (kohorta czerwca 2026, 54 ze 180 firm), a kohorta ma 180 firm miesięcznie. Gdyby karta wniosła realistyczne 5 punktów (30% → 35%), wykrycie tego wymagałoby około 15 miesięcy zbierania danych plus 90-dniowe okno powrotu. Dlatego „wstrzymane” są zamiennikiem, a nie dowodem na przychód. Zastrzeżenie dotyczy kontaminacji opisanej w blokadach: ten układ zaniża efekt.",
+  "decision_rule": "Po 35 dniach zbierania i pełnych 35 dniach obserwacji: wdrożenie rozważamy tylko wtedy, gdy „wstrzymane” spadły istotnie statystycznie w wariancie B i żaden z dwóch bezpieczników nie pogorszył się istotnie. Istotne pogorszenie bezpiecznika wstrzymuje wdrożenie i uruchamia analizę przyczyny. Brak istotnej różnicy w metryce głównej oznacza brak dowodu, a nie równoważność wariantów. Horyzont ustalamy przed startem i nie przedłużamy testu dlatego, że wynik jest „blisko” istotności. Sam wynik statystyczny nie upoważnia do wdrożenia — decyzję podejmuje człowiek, biorąc pod uwagę koszt utrzymania karty i to, że efekt na powtórny zakup pozostaje niezmierzony."
+}
