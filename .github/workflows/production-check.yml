@@ -1,7 +1,10 @@
 name: Production check
 # Free-plan replacement for Netlify's (Pro-only) deploy failure email: after each
-# push to main, wait until Netlify serves this commit's build. A failure here
-# makes GitHub notify the person who pushed or merged.
+# push to main, check that the production site is serving the application — it
+# answers, every hashed asset its page names resolves, and the security headers
+# are present. A failure here makes GitHub notify the person who pushed or
+# merged. It does not prove that this commit's build is the one being served;
+# scripts/check-production.mjs explains why not.
 on:
   push:
     branches: [main]
@@ -18,17 +21,14 @@ concurrency:
   cancel-in-progress: true
 jobs:
   deployed:
-    name: Netlify serves this commit
+    name: Netlify serves the application
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
-          cache: npm
-      - run: npm ci
-      - run: npm run build
-      - run: node scripts/check-production.mjs "$SITE_URL" dist/index.html
+      - run: node scripts/check-production.mjs "$SITE_URL"
         env:
           SITE_URL: ${{ inputs.site_url || 'https://dynamic-kleicha-52254b.netlify.app' }}

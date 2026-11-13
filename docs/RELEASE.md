@@ -13,11 +13,13 @@ A release is the static `dist/` folder that Netlify builds from one commit on `m
 
 ## After merging: automatic production check
 
-The **Production check** workflow ([.github/workflows/production-check.yml](../.github/workflows/production-check.yml)) builds the merged commit and waits up to 10 minutes until the production site serves that build's hashed files (`assets/index-<hash>.js`), then checks the assets and security headers. If Netlify's deploy failed or got stuck, the workflow fails and GitHub emails the person who merged. On the Netlify Free plan this replaces the deploy-failure email, which needs a paid plan.
+The **Production check** workflow ([.github/workflows/production-check.yml](../.github/workflows/production-check.yml)) checks that the production site is serving the application: the page answers, every hashed file it names (`assets/index-<hash>.js` and the rest) resolves, and the HSTS and nosniff headers are present. If the site is broken or half-published, the workflow fails and GitHub emails the person who merged. On the Netlify Free plan this replaces the deploy-failure email, which needs a paid plan.
+
+**What it does not tell you:** whether the deploy of the commit you just merged actually landed. It used to, by building the commit in CI and requiring the live page to name that build's hashed files, but that comparison needs the CI build to be byte-identical to Netlify's and it is not: `VITE_PUBLIC_POSTHOG_KEY` is a build variable in the Netlify project only, Vite inlines it, and the hashes differ. The check was then red on every push while the site was fine. So a deploy that failed or got stuck, leaving the previous build serving correctly, passes this check — after merging, confirm in Netlify → Deploys that the newest commit published, and run the smoke check below. The old guarantee comes back by adding `VITE_PUBLIC_POSTHOG_KEY` (the public project key, already visible in the published bundle) as a GitHub Actions secret and passing it to a build step in the workflow; only the repository owner can add it. Background: [docs/tasks/production-check-false-alarm.md](tasks/production-check-false-alarm.md).
 
 It only runs after a push to `main`; it does not monitor the site between releases.
 
-To confirm the email actually arrives: GitHub → Actions → Production check → Run workflow, set the site address to a wrong one (for example `https://dynamic-kleicha-52254b.netlify.app/test-alert`), run it and wait about 10 minutes for the failure email. GitHub's own notification settings (Settings → Notifications → Actions) must keep failed-workflow emails on.
+To confirm the email actually arrives: GitHub → Actions → Production check → Run workflow, set the site address to a wrong one (for example `https://dynamic-kleicha-52254b.netlify.app/test-alert`), run it and wait about two minutes for the failure email. GitHub's own notification settings (Settings → Notifications → Actions) must keep failed-workflow emails on.
 
 ## Smoke check right after publishing
 
