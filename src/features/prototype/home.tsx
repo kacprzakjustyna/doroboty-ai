@@ -7,8 +7,6 @@ import { usePrototype } from "./store";
 import { publishedJobs } from "./model";
 import { cn } from "@/lib/utils";
 
-import peopleArt from "../../../docs/design-system/agent-kit/assets/people.png";
-
 const categories = [
   {
     slug: "build",
@@ -34,7 +32,7 @@ export default function HomePage() {
   return (
     <>
       <section className="home-intro bg-muted/25 shadow-[var(--gui-divider-bottom-shadow)]">
-        <div className="mx-auto grid max-w-[1360px] gap-12 px-5 py-16 lg:grid-cols-[1.3fr_0.7fr] lg:px-8 lg:py-24">
+        <div className="mx-auto grid max-w-[1360px] gap-12 px-5 py-16 lg:px-8 lg:py-24">
           <div>
             <Badge variant="secondary" className="px-3 py-1 text-xs">
               Dobra robota. Z AI w środku.
@@ -58,7 +56,20 @@ export default function HomePage() {
               </Link>
             </div>
           </div>
-          <img className="people-art" src={peopleArt} alt="Dwie osoby pracujące razem z laptopem" />
+          <ul className="hero-facts">
+            <li>
+              <span className="hero-facts__value">{publishedJobs(state).length}</span>
+              <span className="hero-facts__label">ofert w scenariuszu demo</span>
+            </li>
+            <li>
+              <span className="hero-facts__value">{state.companies.length}</span>
+              <span className="hero-facts__label">firm publikujących role</span>
+            </li>
+            <li>
+              <span className="hero-facts__value">3</span>
+              <span className="hero-facts__label">kategorie: Build · Apply · Lead</span>
+            </li>
+          </ul>
         </div>
       </section>
 

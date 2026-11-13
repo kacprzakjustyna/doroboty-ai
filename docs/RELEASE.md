@@ -21,7 +21,7 @@ GitHub Pages can serve a folder built by a GitHub Actions workflow (Settings →
 
 Open the published address in a private window and check:
 
-1. The homepage loads with illustration, fonts and company logos.
+1. The homepage loads with its fonts, the opening fact strip and company logos.
 2. A deep link such as `#/oferty/ai-product-manager` opens directly and after a refresh.
 3. Main journey: choose Anna → apply to an offer → switch to the employer → record a decision → refresh; data is still there.
 4. Settings: export downloads `doroboty-scenariusz.json`; the "Zgłoś problem" link opens the GitHub bug form.

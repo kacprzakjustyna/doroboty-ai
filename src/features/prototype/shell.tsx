@@ -14,7 +14,7 @@ import {
   Settings,
   LayoutDashboard,
 } from "lucide-react";
-import { BrandMark } from "@/features/public/brand-mark";
+import { BrandWord } from "@/features/public/brand-word";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { currentPerson } from "./model";
 import { usePrototype } from "./store";
@@ -126,8 +126,7 @@ export function Shell() {
         <div className="app-frame">
           <div className="mobile-header">
             <Link to="/" className="brand">
-              <BrandMark />
-              DoRoboty.ai
+              <BrandWord />
             </Link>
             <Button
               aria-label={menuAt === pathname ? "Zamknij menu" : "Otwórz menu"}
@@ -147,8 +146,7 @@ export function Shell() {
             }}
           >
             <Link className="brand" to="/">
-              <BrandMark />
-              DoRoboty.ai
+              <BrandWord />
             </Link>
             <div className="workspace-label">
               <span className="workspace-avatar">{person.name[0]}</span>
@@ -211,8 +209,7 @@ export function Shell() {
                 to="/"
                 aria-label="DoRoboty.ai — strona główna"
               >
-                <BrandMark />
-                <span>DoRoboty.ai</span>
+                <BrandWord />
               </Link>
               <nav aria-label="Główna nawigacja" className="flex items-center gap-2 sm:gap-5">
                 {navigation.map((item) => (

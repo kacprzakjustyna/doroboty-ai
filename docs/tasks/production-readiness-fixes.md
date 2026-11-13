@@ -10,7 +10,7 @@ Close the preparation-stage gaps found in [docs/production-readiness.html](../pr
 - Render failures: a crash inside the routed UI shows a Polish recovery screen instead of a blank page, with scenario export, a way back to the listing, reload and a link to report the problem. No private free text is logged. Browser test.
 - Support: settings explain where to report a problem (GitHub Issues bug form).
 - Release guide: docs describe how a course release to GitHub Pages would be built from a specific commit, what to check right after publishing, how to roll back and what to do when hosting is unavailable.
-- UI follows existing Poster People host recipes (`prototype-section`, `prototype-panel`, Button variants); no new visual family.
+- UI follows the existing host recipes (`prototype-section`, `prototype-panel`, Button variants); no new visual family. Those recipes now carry the DoRoboty design system, so the recovery screen takes the current styling without further work.
 - FEATURES.md updated (SYS-09/SYS-10, settings); `./scripts/verify` steps run; readiness report refreshed.
 
 ## Results (2026-11-13)

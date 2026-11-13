@@ -14,10 +14,10 @@ This is the receiving application's component map, checked against the implement
 | Submitted materials with tabs         | [RecordSheet](../../src/components/record-sheet.tsx)                             | `label`, nonempty `sections`, optional `attachment`/`children`/`footer`; [full API](RECORDS.md#recordsheet).                                                                        |
 | Saved local CV                        | [CvAttachment](../../src/features/prototype/cv-attachment.tsx)                   | Snapshot-safe stack/row, context label and optional native PDF preview; [full API](RECORDS.md#cvattachment).                                                                        |
 | Recorded event history                | [ProcessTimeline](../../src/components/process-timeline.tsx)                     | Ordered actual events, dates and optional role-filtered notes; [full API](RECORDS.md#processtimeline).                                                                              |
-| Scenario percentage                   | [MatchScore](../../src/features/prototype/match-score.tsx)                       | `score: number` validated by the domain; noninteractive shared color scale, [thresholds](RECORDS.md#matchscore).                                                                    |
+| Scenario match score                  | [MatchScore](../../src/features/prototype/match-score.tsx)                       | `score: number` validated by the domain; one uncolored mono `NN/100` fact, shown with [ScoreLimitNote](RECORDS.md#matchscore).                                                      |
 | Job context during application        | [ApplicationOfferPreview](../../src/features/jobs/application-offer-preview.tsx) | `job: JobWithCompany`; real company/title/facts/pay/summary plus in-place full description.                                                                                         |
 | Mobile filter surface                 | [ResponsivePanel](../../src/components/responsive-panel.tsx)                     | `title`, `description`, `children`, `resultCount`; inline above 850px, named Base UI dialog at <=850px. Search remains outside.                                                     |
-| Successful submission decoration      | [ConfettiBurst](../../src/components/confetti-burst.tsx)                         | `origin: { x: number; y: number } \| null` in viewport CSS pixels; one decorative burst per mount. See below.                                                                       |
+| Successful submission decoration      | Removed with the design-system change                                            | The burst is gone: motion is limited to control states. Submission is confirmed by the existing notice. Former API: `origin: { x: number; y: number } \| null` in viewport CSS pixels; one decorative burst per mount. See below.                                                                       |
 
 Do not create another job card, score badge, return link or file-row family for a new route. Reuse the composition and document genuinely missing semantics before adding a variant.
 
@@ -28,7 +28,7 @@ Do not create another job card, score badge, return link or file-row family for 
 <BackLink to="/oferty">Wróć do ofert</BackLink>
 ```
 
-C13 host treatment: Arial/system sans 13px, 12px at <=700px; ink; 17px decorative arrow; 9px gap; 36px minimum height. The shared `.back-link` recipe lives in [poster-people.css](../../src/app/poster-people.css). Hover uses the shared background/pointer plus a 4px-offset underline; keyboard focus uses the existing anchor focus recipe. Native React Router links preserve copied URLs and Enter activation. Page CSS owns surrounding layout, not independent arrow/link styling. C17 recovery CTAs remain separate controls.
+C13 host treatment: IBM Plex Mono 13px, 11.5px at <=700px; ink; 16px decorative arrow; 8px gap; 40px minimum height. The shared `.back-link` recipe lives in [doroboty.css](../../src/app/doroboty.css). Hover uses the shared background/pointer plus a 4px-offset underline; keyboard focus uses the existing anchor focus recipe. Native React Router links preserve copied URLs and Enter activation. Page CSS owns surrounding layout, not independent arrow/link styling. C17 recovery CTAs remain separate controls.
 
 ## Score facts and ordinary facts
 
@@ -59,7 +59,7 @@ The application owns success semantics: run the existing submit operation first,
 | Owner                                                | Scope                                                                         |
 | ---------------------------------------------------- | ----------------------------------------------------------------------------- |
 | [tokens.css](../../tokens.css)                       | Source-role aliases plus explicitly documented host score/status colors.      |
-| [poster-people.css](../../src/app/poster-people.css) | Shared host typography, facts, BackLink and decorative confetti.              |
+| [doroboty.css](../../src/app/doroboty.css)           | Shared host typography, data/mono roles, score fact, BackLink and panels.     |
 | [records.css](../../src/app/records.css)             | Record-sheet/timeline/file-row recipes and recruiting geometry.               |
 | [application.css](../../src/app/application.css)     | Candidate application layout, disclosure, form spacing and successful button. |
 | [interactions.css](../../src/app/interactions.css)   | Shared enabled/disabled cursor and hover contract.                            |

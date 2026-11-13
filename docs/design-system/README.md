@@ -1,10 +1,21 @@
 # DoRoboty.ai design system — project instructions
 
-**Poster People v1.0.0 is the required visual reference for new and changed screens.** It is the accepted rounded, illustrated listing/offer system with Geist Serif headings. Use this directory before choosing page composition, typography, color or component treatment. The previous theme guidance has been removed at Wojtek's request.
+> **The required visual direction is now the [DoRoboty design system](DOROBOTY.md)** — warm paper,
+> Space Grotesk + IBM Plex Mono, one orange signal. Read that document before choosing color,
+> typography, shape or layout. Poster People, described below, was replaced and is kept as a
+> historical record; its pink actions, Geist Serif headings and people illustration must not be
+> reintroduced. The rest of this directory — [IMPLEMENTATION.md](IMPLEMENTATION.md),
+> [HOST-COMPONENTS.md](HOST-COMPONENTS.md), [RECORDS.md](RECORDS.md),
+> [VERIFICATION.md](VERIFICATION.md), [STATUS.md](STATUS.md) — remains valid for host component
+> contracts, record APIs, route/state/focus rules and acceptance scenarios, which the new direction
+> did not change.
 
-This directory contains the complete immutable 67-file v1 agent kit and the receiving project's active integration guidance. The React application now has a host adaptation, mapped in [IMPLEMENTATION.md](IMPLEMENTATION.md). Treat current code as implementation to verify, not a second visual authority or proof of full acceptance. Apply the reference within the user's task scope; installing or updating guidance alone does not initiate a redesign.
+## Historical: Poster People 1.0.0
 
-**Required companions:** [host implementation rules](IMPLEMENTATION.md), [React host component catalog](HOST-COMPONENTS.md), [record/CV APIs](RECORDS.md), [application acceptance checklist](VERIFICATION.md) and [integration status/open findings](STATUS.md). They capture the prevention rules from A01–A08/R01–R04 and the implemented process, application, score, navigation and motion extensions. Read them before changing UI or declaring a finding closed.
+The text below documents the previous direction and its integration. It is retained so the
+immutable 67-file kit in `agent-kit/` stays verifiable and its component contracts stay readable.
+Treat every color, font, radius and illustration statement in it as superseded by
+[DOROBOTY.md](DOROBOTY.md).
 
 ## Read in this order
 
